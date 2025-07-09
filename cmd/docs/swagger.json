@@ -1,0 +1,438 @@
+{
+    "schemes": [
+        "http"
+    ],
+    "swagger": "2.0",
+    "info": {
+        "title": "Breezy notes gateway REST API",
+        "contact": {
+            "name": "Alex \"bustard\" Provor",
+            "url": "https://breezynotes.ru",
+            "email": "help@breezynotes.ru"
+        },
+        "version": "0.1"
+    },
+    "host": "localhost:8080",
+    "basePath": "/",
+    "paths": {
+        "/api/products/create": {
+            "post": {
+                "description": "Добавляет новый продукт в систему",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "products"
+                ],
+                "summary": "Создать новый продукт",
+                "parameters": [
+                    {
+                        "description": "Данные нового продукта",
+                        "name": "product",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/views.Product"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Продукт успешно создан",
+                        "schema": {
+                            "$ref": "#/definitions/views.SWGSuccessResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Неверный формат данных",
+                        "schema": {
+                            "$ref": "#/definitions/views.SWGErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Ошибка на сервере",
+                        "schema": {
+                            "$ref": "#/definitions/views.SWGErrorResponse"
+                        }
+                    },
+                    "502": {
+                        "description": "Ошибка взаимодействия с сервисом",
+                        "schema": {
+                            "$ref": "#/definitions/views.SWGErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/products/delete": {
+            "delete": {
+                "description": "Удаляет продукт из системы по указанному ID",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "products"
+                ],
+                "summary": "Удалить продукт",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "ID продукта",
+                        "name": "id",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Продукт успешно удален",
+                        "schema": {
+                            "$ref": "#/definitions/views.SWGSuccessResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Неверный ID продукта",
+                        "schema": {
+                            "$ref": "#/definitions/views.SWGErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Ошибка на сервере",
+                        "schema": {
+                            "$ref": "#/definitions/views.SWGErrorResponse"
+                        }
+                    },
+                    "502": {
+                        "description": "Ошибка взаимодействия с сервисом",
+                        "schema": {
+                            "$ref": "#/definitions/views.SWGErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/products/getall": {
+            "get": {
+                "description": "Возвращает полный список всех доступных продуктов",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "products"
+                ],
+                "summary": "Получить все продукты",
+                "responses": {
+                    "200": {
+                        "description": "Успешный запрос",
+                        "schema": {
+                            "$ref": "#/definitions/views.SWGProductListResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Ошибка на сервере",
+                        "schema": {
+                            "$ref": "#/definitions/views.SWGErrorResponse"
+                        }
+                    },
+                    "502": {
+                        "description": "Ошибка взаимодействия с сервисом",
+                        "schema": {
+                            "$ref": "#/definitions/views.SWGErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/products/getallfilter": {
+            "post": {
+                "description": "Возвращает список продуктов, соответствующих заданным критериям фильтрации",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "products"
+                ],
+                "summary": "Получить продукты по фильтру",
+                "parameters": [
+                    {
+                        "description": "Параметры фильтрации",
+                        "name": "filter",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/views.ProductFilter"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Успешный запрос",
+                        "schema": {
+                            "$ref": "#/definitions/views.SWGProductListResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Неверный формат запроса",
+                        "schema": {
+                            "$ref": "#/definitions/views.SWGErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Ошибка на сервере",
+                        "schema": {
+                            "$ref": "#/definitions/views.SWGErrorResponse"
+                        }
+                    },
+                    "502": {
+                        "description": "Ошибка взаимодействия с сервисом",
+                        "schema": {
+                            "$ref": "#/definitions/views.SWGErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/products/update": {
+            "put": {
+                "description": "Обновляет информацию о существующем продукте",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "products"
+                ],
+                "summary": "Обновить продукт",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "ID продукта",
+                        "name": "id",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "description": "Новые данные продукта",
+                        "name": "product",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/views.Product"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Продукт успешно обновлен",
+                        "schema": {
+                            "$ref": "#/definitions/views.SWGSuccessResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Неверный ID или формат данных",
+                        "schema": {
+                            "$ref": "#/definitions/views.SWGErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Ошибка на сервере",
+                        "schema": {
+                            "$ref": "#/definitions/views.SWGErrorResponse"
+                        }
+                    },
+                    "502": {
+                        "description": "Ошибка взаимодействия с сервисом",
+                        "schema": {
+                            "$ref": "#/definitions/views.SWGErrorResponse"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "views.Product": {
+            "type": "object",
+            "properties": {
+                "article": {
+                    "type": "string"
+                },
+                "brand": {
+                    "type": "string"
+                },
+                "colors": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "country": {
+                    "type": "string"
+                },
+                "depth": {
+                    "type": "integer"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "height": {
+                    "type": "integer"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "materials": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "photos": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "price": {
+                    "type": "integer"
+                },
+                "seems": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "title": {
+                    "type": "string"
+                },
+                "width": {
+                    "type": "integer"
+                }
+            }
+        },
+        "views.ProductFilter": {
+            "type": "object",
+            "properties": {
+                "brand": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "colors": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "country": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "limit": {
+                    "type": "integer"
+                },
+                "materials": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "max_depth": {
+                    "type": "integer"
+                },
+                "max_height": {
+                    "type": "integer"
+                },
+                "max_price": {
+                    "type": "integer"
+                },
+                "max_width": {
+                    "type": "integer"
+                },
+                "min_depth": {
+                    "type": "integer"
+                },
+                "min_height": {
+                    "type": "integer"
+                },
+                "min_price": {
+                    "type": "integer"
+                },
+                "min_width": {
+                    "type": "integer"
+                },
+                "offset": {
+                    "type": "integer"
+                },
+                "sort_by": {
+                    "type": "string"
+                },
+                "sort_order": {
+                    "type": "string"
+                }
+            }
+        },
+        "views.SWGErrorResponse": {
+            "type": "object",
+            "properties": {
+                "error": {
+                    "description": "Сообщение об ошибке\nexample: Произошла ошибка",
+                    "type": "string"
+                }
+            }
+        },
+        "views.SWGProductListResponse": {
+            "type": "object",
+            "properties": {
+                "products": {
+                    "description": "Массив продуктов",
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/views.SWGProductResponse"
+                    }
+                }
+            }
+        },
+        "views.SWGProductResponse": {
+            "type": "object",
+            "properties": {
+                "description": {
+                    "description": "Описание продукта\nexample: Флагманский смартфон с камерой 108 МП",
+                    "type": "string"
+                },
+                "id": {
+                    "description": "ID продукта\nexample: 5f8d8f9b-6f7c-4a9e-8f9b-6f7c4a9e8f9b",
+                    "type": "string"
+                },
+                "name": {
+                    "description": "Название продукта\nexample: Смартфон Xiaomi",
+                    "type": "string"
+                },
+                "price": {
+                    "description": "Цена продукта\nexample: 29999.99",
+                    "type": "number"
+                }
+            }
+        },
+        "views.SWGSuccessResponse": {
+            "type": "object",
+            "properties": {
+                "message": {
+                    "description": "Сообщение об успехе\nexample: Операция выполнена успешно",
+                    "type": "string"
+                }
+            }
+        }
+    }
+}

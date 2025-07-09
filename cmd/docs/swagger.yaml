@@ -1,0 +1,303 @@
+basePath: /
+definitions:
+  views.Product:
+    properties:
+      article:
+        type: string
+      brand:
+        type: string
+      colors:
+        items:
+          type: string
+        type: array
+      country:
+        type: string
+      depth:
+        type: integer
+      description:
+        type: string
+      height:
+        type: integer
+      id:
+        type: string
+      materials:
+        items:
+          type: string
+        type: array
+      photos:
+        items:
+          type: string
+        type: array
+      price:
+        type: integer
+      seems:
+        items:
+          type: string
+        type: array
+      title:
+        type: string
+      width:
+        type: integer
+    type: object
+  views.ProductFilter:
+    properties:
+      brand:
+        items:
+          type: string
+        type: array
+      colors:
+        items:
+          type: string
+        type: array
+      country:
+        items:
+          type: string
+        type: array
+      limit:
+        type: integer
+      materials:
+        items:
+          type: string
+        type: array
+      max_depth:
+        type: integer
+      max_height:
+        type: integer
+      max_price:
+        type: integer
+      max_width:
+        type: integer
+      min_depth:
+        type: integer
+      min_height:
+        type: integer
+      min_price:
+        type: integer
+      min_width:
+        type: integer
+      offset:
+        type: integer
+      sort_by:
+        type: string
+      sort_order:
+        type: string
+    type: object
+  views.SWGErrorResponse:
+    properties:
+      error:
+        description: |-
+          Сообщение об ошибке
+          example: Произошла ошибка
+        type: string
+    type: object
+  views.SWGProductListResponse:
+    properties:
+      products:
+        description: Массив продуктов
+        items:
+          $ref: '#/definitions/views.SWGProductResponse'
+        type: array
+    type: object
+  views.SWGProductResponse:
+    properties:
+      description:
+        description: |-
+          Описание продукта
+          example: Флагманский смартфон с камерой 108 МП
+        type: string
+      id:
+        description: |-
+          ID продукта
+          example: 5f8d8f9b-6f7c-4a9e-8f9b-6f7c4a9e8f9b
+        type: string
+      name:
+        description: |-
+          Название продукта
+          example: Смартфон Xiaomi
+        type: string
+      price:
+        description: |-
+          Цена продукта
+          example: 29999.99
+        type: number
+    type: object
+  views.SWGSuccessResponse:
+    properties:
+      message:
+        description: |-
+          Сообщение об успехе
+          example: Операция выполнена успешно
+        type: string
+    type: object
+host: localhost:8080
+info:
+  contact:
+    email: help@breezynotes.ru
+    name: Alex "bustard" Provor
+    url: https://breezynotes.ru
+  title: Breezy notes gateway REST API
+  version: "0.1"
+paths:
+  /api/products/create:
+    post:
+      consumes:
+      - application/json
+      description: Добавляет новый продукт в систему
+      parameters:
+      - description: Данные нового продукта
+        in: body
+        name: product
+        required: true
+        schema:
+          $ref: '#/definitions/views.Product'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Продукт успешно создан
+          schema:
+            $ref: '#/definitions/views.SWGSuccessResponse'
+        "400":
+          description: Неверный формат данных
+          schema:
+            $ref: '#/definitions/views.SWGErrorResponse'
+        "500":
+          description: Ошибка на сервере
+          schema:
+            $ref: '#/definitions/views.SWGErrorResponse'
+        "502":
+          description: Ошибка взаимодействия с сервисом
+          schema:
+            $ref: '#/definitions/views.SWGErrorResponse'
+      summary: Создать новый продукт
+      tags:
+      - products
+  /api/products/delete:
+    delete:
+      description: Удаляет продукт из системы по указанному ID
+      parameters:
+      - description: ID продукта
+        in: query
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Продукт успешно удален
+          schema:
+            $ref: '#/definitions/views.SWGSuccessResponse'
+        "400":
+          description: Неверный ID продукта
+          schema:
+            $ref: '#/definitions/views.SWGErrorResponse'
+        "500":
+          description: Ошибка на сервере
+          schema:
+            $ref: '#/definitions/views.SWGErrorResponse'
+        "502":
+          description: Ошибка взаимодействия с сервисом
+          schema:
+            $ref: '#/definitions/views.SWGErrorResponse'
+      summary: Удалить продукт
+      tags:
+      - products
+  /api/products/getall:
+    get:
+      description: Возвращает полный список всех доступных продуктов
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Успешный запрос
+          schema:
+            $ref: '#/definitions/views.SWGProductListResponse'
+        "500":
+          description: Ошибка на сервере
+          schema:
+            $ref: '#/definitions/views.SWGErrorResponse'
+        "502":
+          description: Ошибка взаимодействия с сервисом
+          schema:
+            $ref: '#/definitions/views.SWGErrorResponse'
+      summary: Получить все продукты
+      tags:
+      - products
+  /api/products/getallfilter:
+    post:
+      consumes:
+      - application/json
+      description: Возвращает список продуктов, соответствующих заданным критериям
+        фильтрации
+      parameters:
+      - description: Параметры фильтрации
+        in: body
+        name: filter
+        required: true
+        schema:
+          $ref: '#/definitions/views.ProductFilter'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Успешный запрос
+          schema:
+            $ref: '#/definitions/views.SWGProductListResponse'
+        "400":
+          description: Неверный формат запроса
+          schema:
+            $ref: '#/definitions/views.SWGErrorResponse'
+        "500":
+          description: Ошибка на сервере
+          schema:
+            $ref: '#/definitions/views.SWGErrorResponse'
+        "502":
+          description: Ошибка взаимодействия с сервисом
+          schema:
+            $ref: '#/definitions/views.SWGErrorResponse'
+      summary: Получить продукты по фильтру
+      tags:
+      - products
+  /api/products/update:
+    put:
+      consumes:
+      - application/json
+      description: Обновляет информацию о существующем продукте
+      parameters:
+      - description: ID продукта
+        in: query
+        name: id
+        required: true
+        type: string
+      - description: Новые данные продукта
+        in: body
+        name: product
+        required: true
+        schema:
+          $ref: '#/definitions/views.Product'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Продукт успешно обновлен
+          schema:
+            $ref: '#/definitions/views.SWGSuccessResponse'
+        "400":
+          description: Неверный ID или формат данных
+          schema:
+            $ref: '#/definitions/views.SWGErrorResponse'
+        "500":
+          description: Ошибка на сервере
+          schema:
+            $ref: '#/definitions/views.SWGErrorResponse'
+        "502":
+          description: Ошибка взаимодействия с сервисом
+          schema:
+            $ref: '#/definitions/views.SWGErrorResponse'
+      summary: Обновить продукт
+      tags:
+      - products
+schemes:
+- http
+swagger: "2.0"
