@@ -1,0 +1,9 @@
+addr_products: "product-service:8008"
+retries_count: 5
+timeout: 10s
+backoff: 100ms
+port: 8080
+mode: "PROD"
+redis_addr: "redis:6379"
+redis_pw: "volharedisPASSWDS!O!H"
+admin_pw: "provorov1488"

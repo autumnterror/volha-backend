@@ -4,12 +4,12 @@ import (
 	"database/sql"
 	"errors"
 	"flag"
+	"github.com/autumnterror/breezynotes/pkg/utils/format"
+	"github.com/autumnterror/volha-backend/internal/product-service/config"
 	"github.com/golang-migrate/migrate/v4"
 	"github.com/golang-migrate/migrate/v4/database/postgres"
 	_ "github.com/golang-migrate/migrate/v4/source/file"
 	"log"
-	"productService/config"
-	"productService/internal/utils/format"
 )
 
 func main() {

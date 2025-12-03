@@ -1,5 +1,4 @@
 .env
-*.cmd
 *.sql
 *.zip
 testhtml/
@@ -9,3 +8,4 @@ volha-proto/
 local.yaml
 test.go
 .idea
+qodana.yaml
