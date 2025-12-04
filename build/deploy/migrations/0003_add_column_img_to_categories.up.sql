@@ -1,3 +1,0 @@
-
-ALTER TABLE categories
-    ADD COLUMN img VARCHAR(100);

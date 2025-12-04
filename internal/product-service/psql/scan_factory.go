@@ -114,6 +114,23 @@ func (s *PCPScanner) GetList() any {
 	return s.list
 }
 
+type SlideScanner struct {
+	list []*productsRPC.Slide
+}
+
+func (s *SlideScanner) Scan(rows *sql.Rows) error {
+	var sl productsRPC.Slide
+	if err := rows.Scan(&sl.Id, &sl.Link, &sl.Img, &sl.Img762); err != nil {
+		return err
+	}
+	s.list = append(s.list, &sl)
+	return nil
+}
+
+func (s *SlideScanner) GetList() any {
+	return s.list
+}
+
 //-----------------------------------ROW-----------------------------------
 
 type EntityScannerRow interface {
@@ -221,4 +238,21 @@ func (s *PCPScannerRow) Scan(rows *sql.Row) error {
 
 func (s *PCPScannerRow) Get() any {
 	return s.pcp
+}
+
+type SlideScannerRow struct {
+	sl *productsRPC.Slide
+}
+
+func (s *SlideScannerRow) Scan(rows *sql.Row) error {
+	var sl productsRPC.Slide
+	if err := rows.Scan(&sl.Id, &sl.Link, &sl.Img, &sl.Img762); err != nil {
+		return err
+	}
+	s.sl = &sl
+	return nil
+}
+
+func (s *SlideScannerRow) Get() any {
+	return s.sl
 }

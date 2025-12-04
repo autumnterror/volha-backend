@@ -179,6 +179,39 @@ func TestGoodSimpleTables(t *testing.T) {
 
 		assert.NoError(t, driver.Delete(ctx, c.Id, views.Color))
 	})
+	t.Run("slide", func(t *testing.T) {
+		t.Parallel()
+
+		db, err := NewConnect(config.Test())
+		assert.NoError(t, err)
+
+		tx, err := db.Driver.Begin()
+		assert.NoError(t, err)
+
+		driver := Driver{Driver: tx}
+
+		t.Cleanup(func() {
+			_ = tx.Rollback()
+			db.Disconnect()
+		})
+
+		s := &productsRPC.Slide{Id: "slide test", Link: "http://example.com", Img: "img1.jpg", Img762: "img762.jpg"}
+		updated := &productsRPC.Slide{Id: "slide test", Link: "http://new.example.com", Img: "newimg1.jpg", Img762: "newimg762.jpg"}
+
+		assert.NoError(t, driver.Create(ctx, s, views.Slide))
+
+		all, err := driver.GetAll(ctx, views.Slide)
+		assert.NoError(t, err)
+		log.Println("Slides after create:", all)
+
+		assert.NoError(t, driver.Update(ctx, updated, views.Slide))
+
+		all, err = driver.Get(ctx, s.Id, views.Slide)
+		assert.NoError(t, err)
+		log.Println("Slides after update:", all)
+
+		assert.NoError(t, driver.Delete(ctx, s.Id, views.Slide))
+	})
 	t.Run("product color photos", func(t *testing.T) {
 		t.Parallel()
 
@@ -450,6 +483,46 @@ func TestBadSimpleTables(t *testing.T) {
 		)
 
 		assert.ErrorIs(t, driver.Delete(ctx, color.Id, views.Color), ErrNotFound)
+	})
+	t.Run("slides bad", func(t *testing.T) {
+		t.Parallel()
+
+		db, err := NewConnect(config.Test())
+		assert.NoError(t, err)
+
+		tx, err := db.Driver.Begin()
+		assert.NoError(t, err)
+
+		driver := Driver{Driver: tx}
+		defer t.Cleanup(func() {
+			_ = tx.Rollback()
+			db.Disconnect()
+		})
+
+		assert.ErrorIs(t, driver.Create(ctx, 2, views.Slide), ErrInvalidType)
+		assert.ErrorIs(t, driver.Create(ctx, 2, 19), ErrUnknownType)
+
+		s := &productsRPC.Slide{Id: "slide test", Link: "http://example.com", Img: "img1.jpg", Img762: "img762.jpg"}
+		tx1, err := db.Driver.Begin()
+		assert.NoError(t, err)
+		{
+			driver := Driver{Driver: tx1}
+			assert.NoError(t, driver.Create(ctx, s, views.Slide))
+			assert.ErrorIs(t, driver.Create(ctx, s, views.Slide), ErrAlreadyExists)
+		}
+		_ = tx1.Rollback()
+
+		assert.ErrorIs(
+			t,
+			driver.Update(
+				ctx,
+				&productsRPC.Slide{Id: "notexist"},
+				views.Slide,
+			),
+			ErrNotFound,
+		)
+
+		assert.ErrorIs(t, driver.Delete(ctx, s.Id, views.Slide), ErrNotFound)
 	})
 	t.Run("product color photos bad", func(t *testing.T) {
 		t.Parallel()

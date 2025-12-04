@@ -9,6 +9,7 @@ const (
 	Material
 	Country
 	ProductColorPhotos
+	Slide
 )
 
 func (t Type) String() string {

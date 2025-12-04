@@ -8,8 +8,7 @@ import "google/protobuf/empty.proto";
 import "domain.proto";
 
 service Products {
-  rpc GetDictionaries(google.protobuf.Empty) returns (Dictionaries);
-  rpc GetDictionariesByCategory(Id) returns (DictionariesByCategory);
+  rpc GetDictionaries(Id) returns (Dictionaries);
 
   // Products
   rpc SearchProducts(ProductSearch) returns (ProductList);
@@ -25,31 +24,35 @@ service Products {
   rpc UpdateBrand(Brand) returns (google.protobuf.Empty);
   rpc DeleteBrand(Id) returns (google.protobuf.Empty);
   rpc GetAllBrands(google.protobuf.Empty) returns (BrandList);
+  rpc GetBrand(Id) returns (Brand);
 
   // Categories
   rpc CreateCategory(Category) returns (google.protobuf.Empty);
   rpc UpdateCategory(Category) returns (google.protobuf.Empty);
   rpc DeleteCategory(Id) returns (google.protobuf.Empty);
   rpc GetAllCategories(google.protobuf.Empty) returns (CategoryList);
+  rpc GetCategory(Id) returns (Category);
 
   // Countries
   rpc CreateCountry(Country) returns (google.protobuf.Empty);
   rpc UpdateCountry(Country) returns (google.protobuf.Empty);
   rpc DeleteCountry(Id) returns (google.protobuf.Empty);
   rpc GetAllCountries(google.protobuf.Empty) returns (CountryList);
+  rpc GetCountry(Id) returns (Country);
 
   // Materials
   rpc CreateMaterial(Material) returns (google.protobuf.Empty);
   rpc UpdateMaterial(Material) returns (google.protobuf.Empty);
   rpc DeleteMaterial(Id) returns (google.protobuf.Empty);
   rpc GetAllMaterials(google.protobuf.Empty) returns (MaterialList);
+  rpc GetMaterial(Id) returns (Material);
 
   // Colors
   rpc CreateColor(Color) returns (google.protobuf.Empty);
   rpc UpdateColor(Color) returns (google.protobuf.Empty);
   rpc DeleteColor(Id) returns (google.protobuf.Empty);
   rpc GetAllColors(google.protobuf.Empty) returns (ColorList);
-
+  rpc GetColor(Id) returns (Color);
   // Product Color Photos
   rpc CreateProductColorPhotos(ProductColorPhotos) returns (google.protobuf.Empty);
   rpc UpdateProductColorPhotos(ProductColorPhotos) returns (google.protobuf.Empty);

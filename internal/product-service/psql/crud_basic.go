@@ -38,6 +38,9 @@ func (d Driver) GetAll(ctx context.Context, _type views.Type) (any, error) {
 	case views.ProductColorPhotos:
 		scanner = &PCPScanner{}
 		query = `SELECT product_id, color_id, photos FROM product_color_photos`
+	case views.Slide:
+		scanner = &SlideScanner{}
+		query = `SELECT id, link, img, img762 FROM slides`
 	default:
 		return nil, format.Error(op, ErrUnknownType)
 	}
@@ -83,9 +86,9 @@ func (d Driver) Get(
 	case views.Category:
 		scanner = &CategoryScannerRow{}
 		query = `SELECT id, title, uri, img FROM categories WHERE id = $1`
-	case views.ProductColorPhotos:
-		scanner = &PCPScannerRow{}
-		query = `SELECT product_id, color_id, photos FROM product_color_photos WHERE id = $1`
+	case views.Slide:
+		scanner = &SlideScannerRow{}
+		query = `SELECT id, link, img, img762 FROM slides WHERE id = $1`
 	default:
 		return nil, format.Error(op, ErrUnknownType)
 	}
@@ -268,7 +271,16 @@ func (d Driver) Update(
 		args = append(args, b.ProductId)
 		args = append(args, b.ColorId)
 		args = append(args, pq.Array(b.Photos))
-
+	case views.Slide:
+		b, ok := obj.(*productsRPC.Slide)
+		if !ok {
+			return format.Error(op, ErrInvalidType)
+		}
+		query = `UPDATE slides SET link = $2, img = $3, img762 = $4 WHERE id = $1`
+		args = append(args, b.Id)
+		args = append(args, b.Link)
+		args = append(args, b.Img)
+		args = append(args, b.Img762)
 	default:
 		return format.Error(op, ErrUnknownType)
 	}
@@ -307,6 +319,8 @@ func (d Driver) Delete(
 		query = `DELETE FROM categories WHERE id = $1`
 	case views.Color:
 		query = `DELETE FROM colors WHERE id = $1`
+	case views.Slide:
+		query = `DELETE FROM slides WHERE id = $1`
 	default:
 		return format.Error(op, ErrUnknownType)
 	}

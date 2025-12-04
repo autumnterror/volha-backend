@@ -140,8 +140,10 @@ func (d Driver) CreateProduct(ctx context.Context, p *productsRPC.ProductId) err
 		if errors.As(err, &pqErr) {
 			switch pqErr.Code {
 			case "23503": // foreign_key_violation
+				log.Error(op, pqErr.Message, nil)
 				return format.Error(op, ErrForeignKey)
 			case "23505": // unique_violation
+				log.Error(op, pqErr.Message, nil)
 				return format.Error(op, ErrAlreadyExists)
 			}
 		}
@@ -196,7 +198,7 @@ func (d Driver) SearchProducts(ctx context.Context, filter *productsRPC.ProductS
 
 	var (
 		query string
-		args  []interface{}
+		args  []any
 	)
 	query = filterProductsQuery
 	switch {

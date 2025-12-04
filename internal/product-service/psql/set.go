@@ -383,3 +383,60 @@ JOIN brands     b   ON b.id   = p.brand_id
 JOIN categories cat ON cat.id = p.category_id
 JOIN countries  co  ON co.id  = p.country_id
 `
+const getDicByCatQuery = `
+		WITH dicts AS (
+			SELECT 'brand' as type, id, title, '' as extra1, '' as extra2 FROM brands
+			UNION ALL
+			SELECT 'category', id, title, uri, '' FROM categories
+			UNION ALL
+			SELECT 'country', id, title, friendly, '' FROM countries
+			UNION ALL
+			SELECT 'material', id, title, '', '' FROM materials
+			UNION ALL
+			SELECT 'color', id, title, hex, '' FROM colors
+		),
+		stats AS (
+			SELECT
+				MIN(price)::text AS min_price,
+				MAX(price)::text AS max_price,
+				MIN(width)::text AS min_width,
+				MAX(width)::text AS max_width,
+				MIN(height)::text AS min_height,
+				MAX(height)::text AS max_height,
+				MIN(depth)::text AS min_depth,
+				MAX(depth)::text AS max_depth
+			FROM products
+			WHERE category_id = $1
+		)
+		SELECT * FROM dicts
+		UNION ALL
+		SELECT 'stats', '', min_price, max_price, min_width || ',' || max_width || ',' || min_height || ',' || max_height || ',' || min_depth || ',' || max_depth FROM stats;
+	`
+const getDicQuery = `
+		WITH dicts AS (
+			SELECT 'brand' as type, id, title, '' as extra1, '' as extra2 FROM brands
+			UNION ALL
+			SELECT 'category', id, title, uri, '' FROM categories
+			UNION ALL
+			SELECT 'country', id, title, friendly, '' FROM countries
+			UNION ALL
+			SELECT 'material', id, title, '', '' FROM materials
+			UNION ALL
+			SELECT 'color', id, title, hex, '' FROM colors
+		),
+		stats AS (
+			SELECT
+				MIN(price)::text AS min_price,
+				MAX(price)::text AS max_price,
+				MIN(width)::text AS min_width,
+				MAX(width)::text AS max_width,
+				MIN(height)::text AS min_height,
+				MAX(height)::text AS max_height,
+				MIN(depth)::text AS min_depth,
+				MAX(depth)::text AS max_depth
+			FROM products
+		)
+		SELECT * FROM dicts
+		UNION ALL
+		SELECT 'stats', '', min_price, max_price, min_width || ',' || max_width || ',' || min_height || ',' || max_height || ',' || min_depth || ',' || max_depth FROM stats;
+	`

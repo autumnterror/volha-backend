@@ -1,3 +1,0 @@
-conn_str: "postgres://postgres:zzz_pRR0w0RRq_vvv@productsdb:5432/productsdb?sslmode=disable"
-port: 8008
-mode: "PROD"

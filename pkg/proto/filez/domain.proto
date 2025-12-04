@@ -23,23 +23,23 @@ message ProductSearch {
 }
 
 message BrandList {
-  repeated Brand brands = 1;
+  repeated Brand items = 1;
 }
 
 message CategoryList {
-  repeated Category categories = 1;
+  repeated Category items = 1;
 }
 
 message CountryList {
-  repeated Country countries = 1;
+  repeated Country items = 1;
 }
 
 message MaterialList {
-  repeated Material materials = 1;
+  repeated Material items = 1;
 }
 
 message ColorList {
-  repeated Color colors = 1;
+  repeated Color items = 1;
 }
 
 message ProductColorPhotos {
@@ -163,18 +163,10 @@ message Color {
   string hex = 3;
 }
 
-message DictionariesByCategory {
-  BrandList brands = 1;
-  CountryList countries = 2;
-  MaterialList materials = 3;
-  ColorList colors = 4;
-
-  int32 min_price = 5;
-  int32 max_price = 6;
-  int32 min_width = 7;
-  int32 max_width = 8;
-  int32 min_height = 9;
-  int32 max_height = 10;
-  int32 min_depth = 11;
-  int32 max_depth = 12;
+message Slide {
+  string id = 1;
+  string link = 2;
+  string img = 3;
+  string img762 = 4;
 }
+
