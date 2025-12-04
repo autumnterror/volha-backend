@@ -4,6 +4,7 @@ import (
 	"database/sql"
 
 	productsRPC "github.com/autumnterror/volha-backend/pkg/proto/gen"
+	"github.com/lib/pq"
 )
 
 type EntityScanner interface {
@@ -93,6 +94,23 @@ func (s *CategoryScanner) Scan(rows *sql.Rows) error {
 }
 
 func (s *CategoryScanner) GetList() any {
+	return s.list
+}
+
+type PCPScanner struct {
+	list []*productsRPC.ProductColorPhotos
+}
+
+func (s *PCPScanner) Scan(rows *sql.Rows) error {
+	var pcp productsRPC.ProductColorPhotos
+	if err := rows.Scan(&pcp.ProductId, &pcp.ColorId, pq.Array(&pcp.Photos)); err != nil {
+		return err
+	}
+	s.list = append(s.list, &pcp)
+	return nil
+}
+
+func (s *PCPScanner) GetList() any {
 	return s.list
 }
 
@@ -186,4 +204,21 @@ func (s *CategoryScannerRow) Scan(rows *sql.Row) error {
 
 func (s *CategoryScannerRow) Get() any {
 	return s.c
+}
+
+type PCPScannerRow struct {
+	pcp *productsRPC.ProductColorPhotos
+}
+
+func (s *PCPScannerRow) Scan(rows *sql.Row) error {
+	var pcp productsRPC.ProductColorPhotos
+	if err := rows.Scan(&pcp.ProductId, &pcp.ColorId, pq.Array(&pcp.Photos)); err != nil {
+		return err
+	}
+	s.pcp = &pcp
+	return nil
+}
+
+func (s *PCPScannerRow) Get() any {
+	return s.pcp
 }

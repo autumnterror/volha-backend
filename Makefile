@@ -13,7 +13,8 @@ cddb-v:
 	docker compose -f ./build/deploy/docker-compose.db.yml down -v
 bldmig:
 	go build -o ./build/deploy/migrator.exe ./cmd/product-service/migrator
-
+bldmig-mac:
+	go build -o ./build/deploy/migrator ./cmd/product-service/migrator
 #-------------------------test-------------------------
 t-m:
 	go test -run $(METHOD) ./... -v

@@ -4,6 +4,7 @@ import (
 	"context"
 	"database/sql"
 	"errors"
+
 	"github.com/autumnterror/breezynotes/pkg/log"
 	"github.com/lib/pq"
 
@@ -34,7 +35,9 @@ func (d Driver) GetAll(ctx context.Context, _type views.Type) (any, error) {
 	case views.Category:
 		scanner = &CategoryScanner{}
 		query = `SELECT id, title, uri, img FROM categories`
-
+	case views.ProductColorPhotos:
+		scanner = &PCPScanner{}
+		query = `SELECT product_id, color_id, photos FROM product_color_photos`
 	default:
 		return nil, format.Error(op, ErrUnknownType)
 	}
@@ -80,10 +83,34 @@ func (d Driver) Get(
 	case views.Category:
 		scanner = &CategoryScannerRow{}
 		query = `SELECT id, title, uri, img FROM categories WHERE id = $1`
+	case views.ProductColorPhotos:
+		scanner = &PCPScannerRow{}
+		query = `SELECT product_id, color_id, photos FROM product_color_photos WHERE id = $1`
 	default:
 		return nil, format.Error(op, ErrUnknownType)
 	}
 	res := d.Driver.QueryRowContext(ctx, query, id)
+	if err := scanner.Scan(res); err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			return nil, format.Error(op, ErrNotFound)
+		}
+		return nil, format.Error(op, err)
+	}
+	return scanner.Get(), nil
+}
+
+func (d Driver) GetProductColorPhotos(
+	ctx context.Context,
+	productID string,
+	colorID string,
+	_type views.Type,
+) (any, error) {
+	op := "psql.Get." + _type.String()
+	var query string
+	var scanner EntityScannerRow
+	scanner = &PCPScannerRow{}
+	query = `SELECT product_id, color_id, photos FROM product_color_photos WHERE product_id = $1 AND color_id = $2`
+	res := d.Driver.QueryRowContext(ctx, query, productID, colorID)
 	if err := scanner.Scan(res); err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
 			return nil, format.Error(op, ErrNotFound)
@@ -146,6 +173,15 @@ func (d Driver) Create(
 		args = append(args, b.Id)
 		args = append(args, b.Title)
 		args = append(args, b.Hex)
+	case views.ProductColorPhotos:
+		b, ok := obj.(*productsRPC.ProductColorPhotos)
+		if !ok {
+			return format.Error(op, ErrInvalidType)
+		}
+		query = `INSERT INTO product_color_photos (product_id, color_id, photos) VALUES ($1, $2, $3)`
+		args = append(args, b.ProductId)
+		args = append(args, b.ColorId)
+		args = append(args, pq.Array(b.Photos))
 	default:
 		return format.Error(op, ErrUnknownType)
 	}
@@ -153,7 +189,13 @@ func (d Driver) Create(
 	_, err := d.Driver.ExecContext(ctx, query, args...)
 	if err != nil {
 		var pqErr *pq.Error
-		if errors.As(err, &pqErr) && pqErr.Code == "23505" { // unique_violation
+		if errors.As(err, &pqErr) {
+			switch pqErr.Code {
+			case "23505": // unique_violation
+				return format.Error(op, ErrAlreadyExists)
+			case "23503": // foreign_key_violation
+				return format.Error(op, ErrForeignKey)
+			}
 			return format.Error(op, ErrAlreadyExists)
 		}
 		return format.Error(op, err)
@@ -217,6 +259,16 @@ func (d Driver) Update(
 		args = append(args, b.Id)
 		args = append(args, b.Title)
 		args = append(args, b.Hex)
+	case views.ProductColorPhotos:
+		b, ok := obj.(*productsRPC.ProductColorPhotos)
+		if !ok {
+			return format.Error(op, ErrInvalidType)
+		}
+		query = `UPDATE product_color_photos SET photos = $3 WHERE product_id = $1 AND color_id = $2`
+		args = append(args, b.ProductId)
+		args = append(args, b.ColorId)
+		args = append(args, pq.Array(b.Photos))
+
 	default:
 		return format.Error(op, ErrUnknownType)
 	}
@@ -244,7 +296,6 @@ func (d Driver) Delete(
 ) error {
 	op := "psql.Delete." + _type.String()
 	var query string
-
 	switch _type {
 	case views.Brand:
 		query = `DELETE FROM brands WHERE id = $1`
@@ -261,6 +312,28 @@ func (d Driver) Delete(
 	}
 
 	res, err := d.Driver.ExecContext(ctx, query, id)
+	if err != nil {
+		return format.Error(op, err)
+	}
+
+	rowsAffected, err := res.RowsAffected()
+	if err != nil {
+		return format.Error(op, err)
+	}
+	if rowsAffected == 0 {
+		return format.Error(op, ErrNotFound)
+	}
+	return nil
+}
+
+func (d Driver) DeleteProductColorPhotos(
+	ctx context.Context,
+	productID string,
+	colorID string,
+) error {
+	op := "psql.deleteProductColorPhotos"
+	query := `DELETE FROM product_color_photos WHERE product_id = $1 AND color_id = $2`
+	res, err := d.Driver.ExecContext(ctx, query, productID, colorID)
 	if err != nil {
 		return format.Error(op, err)
 	}

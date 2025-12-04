@@ -8,6 +8,7 @@ const (
 	Color
 	Material
 	Country
+	ProductColorPhotos
 )
 
 func (t Type) String() string {

@@ -1,5 +1,5 @@
 .env
-*.sql
+dump*.sql
 *.zip
 testhtml/
 configs/*.yaml
@@ -9,3 +9,4 @@ local.yaml
 test.go
 .idea
 qodana.yaml
+migrator
