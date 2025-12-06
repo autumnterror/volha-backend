@@ -254,7 +254,7 @@ definitions:
     type: object
   views.SWGId:
     properties:
-      message:
+      id:
         example: asidofadsklhf
         type: string
     type: object
@@ -775,6 +775,13 @@ paths:
       consumes:
       - application/json
       description: Обновляет массив фотографий для конкретного продукта и цвета
+      parameters:
+      - description: Измененный набор фотографий
+        in: body
+        name: photos
+        required: true
+        schema:
+          $ref: '#/definitions/productsRPC.ProductColorPhotos'
       produces:
       - application/json
       responses:
@@ -807,7 +814,7 @@ paths:
           description: успех
           schema:
             items:
-              $ref: '#/definitions/productsRPC.Slide'
+              $ref: '#/definitions/productsRPC.ProductColorPhotos'
             type: array
         "502":
           description: ошибка в микросервисе
@@ -1064,8 +1071,6 @@ paths:
       tags:
       - files
     post:
-      consumes:
-      - application/json
       description: Сохраняет изображение в папке сервера images/. В поле "img" передается
         файл с расширениями jpg, png, webp, gif
       produces:
@@ -1284,7 +1289,7 @@ paths:
       parameters:
       - description: Новый продукт
         in: body
-        name: material
+        name: product
         required: true
         schema:
           $ref: '#/definitions/productsRPC.ProductId'
@@ -1317,7 +1322,7 @@ paths:
       parameters:
       - description: Обновлённые данные продукта
         in: body
-        name: material
+        name: product
         required: true
         schema:
           $ref: '#/definitions/productsRPC.ProductId'
@@ -1421,7 +1426,7 @@ paths:
       parameters:
       - description: Поисковый запрос
         in: query
-        name: promt
+        name: prompt
         required: true
         type: string
       produces:

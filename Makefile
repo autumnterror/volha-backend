@@ -28,6 +28,11 @@ bld-a:
 	docker build -t zitrax78/volha-gateway --file ./build/gateway/dockerfile .
 	docker build -t zitrax78/product-service --file ./build/product-service/dockerfile .
 	docker build -t zitrax78/dumper --file ./build/dumper/dockerfile .
+push-a:
+	docker push zitrax78/volha-gateway
+	docker push zitrax78/product-service
+	docker push zitrax78/dumper
+
 #-------------------------test-------------------------
 t-m:
 	go test -run $(METHOD) ./... -v

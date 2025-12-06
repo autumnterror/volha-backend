@@ -18,7 +18,7 @@ import (
 // @Description Ищет продукт по ID (UUID), article (8 цифр) или названию (частичное совпадение)
 // @Tags product
 // @Produce json
-// @Param promt query string true "Поисковый запрос"
+// @Param prompt query string true "Поисковый запрос"
 // @Success 200 {object} []productsRPC.Product
 // @Failure 400 {object} views.SWGError
 // @Failure 502 {object} views.SWGError
@@ -27,7 +27,7 @@ func (a *Apis) SearchProducts(c echo.Context) error {
 	const op = "handlers.SearchProducts"
 	log.Blue(op)
 
-	query := c.QueryParam("promt")
+	query := c.QueryParam("prompt")
 	if query == "" {
 		return c.JSON(http.StatusBadRequest, views.SWGError{Error: "empty query"})
 	}

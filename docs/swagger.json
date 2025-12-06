@@ -681,6 +681,17 @@
                     "product_color_photos"
                 ],
                 "summary": "Обновить фотографии продукта для цвета",
+                "parameters": [
+                    {
+                        "description": "Измененный набор фотографий",
+                        "name": "photos",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/productsRPC.ProductColorPhotos"
+                        }
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "успех",
@@ -825,7 +836,7 @@
                         "schema": {
                             "type": "array",
                             "items": {
-                                "$ref": "#/definitions/productsRPC.Slide"
+                                "$ref": "#/definitions/productsRPC.ProductColorPhotos"
                             }
                         }
                     },
@@ -1172,9 +1183,6 @@
         "/api/files": {
             "post": {
                 "description": "Сохраняет изображение в папке сервера images/. В поле \"img\" передается файл с расширениями jpg, png, webp, gif",
-                "consumes": [
-                    "application/json"
-                ],
                 "produces": [
                     "application/json"
                 ],
@@ -1501,7 +1509,7 @@
                 "parameters": [
                     {
                         "description": "Обновлённые данные продукта",
-                        "name": "material",
+                        "name": "product",
                         "in": "body",
                         "required": true,
                         "schema": {
@@ -1551,7 +1559,7 @@
                 "parameters": [
                     {
                         "description": "Новый продукт",
-                        "name": "material",
+                        "name": "product",
                         "in": "body",
                         "required": true,
                         "schema": {
@@ -1752,7 +1760,7 @@
                     {
                         "type": "string",
                         "description": "Поисковый запрос",
-                        "name": "promt",
+                        "name": "prompt",
                         "in": "query",
                         "required": true
                     }
@@ -2380,7 +2388,7 @@
         "views.SWGId": {
             "type": "object",
             "properties": {
-                "message": {
+                "id": {
                     "type": "string",
                     "example": "asidofadsklhf"
                 }

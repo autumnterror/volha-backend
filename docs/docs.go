@@ -685,6 +685,17 @@ const docTemplate = `{
                     "product_color_photos"
                 ],
                 "summary": "Обновить фотографии продукта для цвета",
+                "parameters": [
+                    {
+                        "description": "Измененный набор фотографий",
+                        "name": "photos",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/productsRPC.ProductColorPhotos"
+                        }
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "успех",
@@ -829,7 +840,7 @@ const docTemplate = `{
                         "schema": {
                             "type": "array",
                             "items": {
-                                "$ref": "#/definitions/productsRPC.Slide"
+                                "$ref": "#/definitions/productsRPC.ProductColorPhotos"
                             }
                         }
                     },
@@ -1176,9 +1187,6 @@ const docTemplate = `{
         "/api/files": {
             "post": {
                 "description": "Сохраняет изображение в папке сервера images/. В поле \"img\" передается файл с расширениями jpg, png, webp, gif",
-                "consumes": [
-                    "application/json"
-                ],
                 "produces": [
                     "application/json"
                 ],
@@ -1505,7 +1513,7 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "description": "Обновлённые данные продукта",
-                        "name": "material",
+                        "name": "product",
                         "in": "body",
                         "required": true,
                         "schema": {
@@ -1555,7 +1563,7 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "description": "Новый продукт",
-                        "name": "material",
+                        "name": "product",
                         "in": "body",
                         "required": true,
                         "schema": {
@@ -1756,7 +1764,7 @@ const docTemplate = `{
                     {
                         "type": "string",
                         "description": "Поисковый запрос",
-                        "name": "promt",
+                        "name": "prompt",
                         "in": "query",
                         "required": true
                     }
@@ -2384,7 +2392,7 @@ const docTemplate = `{
         "views.SWGId": {
             "type": "object",
             "properties": {
-                "message": {
+                "id": {
                     "type": "string",
                     "example": "asidofadsklhf"
                 }
@@ -2412,8 +2420,8 @@ var SwaggerInfo = &swag.Spec{
 	Description:      "",
 	InfoInstanceName: "swagger",
 	SwaggerTemplate:  docTemplate,
-	//LeftDelim:        "{{",
-	//RightDelim:       "}}",
+	LeftDelim:        "{{",
+	RightDelim:       "}}",
 }
 
 func init() {

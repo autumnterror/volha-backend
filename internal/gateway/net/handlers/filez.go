@@ -2,17 +2,19 @@ package handlers
 
 import (
 	"errors"
+
 	"github.com/autumnterror/breezynotes/pkg/log"
 
-	"github.com/autumnterror/volha-backend/pkg/views"
-	"github.com/google/uuid"
-	"github.com/labstack/echo/v4"
 	"io"
 	"mime/multipart"
 	"net/http"
 	"os"
 	"path/filepath"
 	"strings"
+
+	"github.com/autumnterror/volha-backend/pkg/views"
+	"github.com/google/uuid"
+	"github.com/labstack/echo/v4"
 )
 
 var allowedMIMEs = map[string]string{
@@ -31,7 +33,6 @@ const (
 // @Summary Загрузить изображение
 // @Description Сохраняет изображение в папке сервера images/. В поле "img" передается файл с расширениями jpg, png, webp, gif
 // @Tags files
-// @Accept json
 // @Produce json
 // @Success 200 {object} views.SWGFileUploadResponse "Цвет успешно создан"
 // @Failure 400 {object} views.SWGError "Неверный формат данных"

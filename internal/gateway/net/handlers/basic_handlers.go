@@ -686,7 +686,7 @@ func (a *Apis) GetSlide(c echo.Context) error {
 // @Tags product
 // @Accept json
 // @Produce json
-// @Param material body productsRPC.ProductId true "Новый продукт"
+// @Param product body productsRPC.ProductId true "Новый продукт"
 // @Success 200 {object} views.SWGId "успех"
 // @Failure 400 {object} views.SWGError "неправильный ввод"
 // @Failure 409 {object} views.SWGError "уже существует"
@@ -710,7 +710,7 @@ func (a *Apis) CreateProduct(c echo.Context) error {
 // @Tags product
 // @Accept json
 // @Produce json
-// @Param material body productsRPC.ProductId true "Обновлённые данные продукта"
+// @Param product body productsRPC.ProductId true "Обновлённые данные продукта"
 // @Success 200 {object} views.SWGMessage "успех"
 // @Failure 400 {object} views.SWGError "неправильный ввод"
 // @Failure 404 {object} views.SWGError "не найдено"
@@ -802,6 +802,7 @@ func (a *Apis) CreateProductColorPhotos(c echo.Context) error {
 // @Tags product_color_photos
 // @Accept json
 // @Produce json
+// @Param photos body productsRPC.ProductColorPhotos true "Измененный набор фотографий"
 // @Success 200 {object} views.SWGMessage "успех"
 // @Failure 400 {object} views.SWGError "неправильный ввод"
 // @Failure 404 {object} views.SWGError "не найдено"
@@ -824,7 +825,7 @@ func (a *Apis) UpdateProductColorPhotos(c echo.Context) error {
 // @Description Возвращает все записи product_color_photos
 // @Tags product_color_photos
 // @Produce json
-// @Success 200 {object} []productsRPC.Slide "успех"
+// @Success 200 {object} []productsRPC.ProductColorPhotos "успех"
 // @Failure 502 {object} views.SWGError "ошибка в микросервисе"
 // @Router /api/colorphotos/all [get]
 func (a *Apis) GetAllProductColorPhotos(c echo.Context) error {
