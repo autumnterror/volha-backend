@@ -1,0 +1,18 @@
+FROM golang:alpine AS builder
+
+WORKDIR /app
+COPY go.mod go.sum ./
+RUN go mod download
+COPY . .
+RUN CGO_ENABLED=0 GOOS=linux go build -o /app/product-service ./cmd/product-service/app/main.go
+
+FROM alpine:latest
+WORKDIR /app
+COPY --from=builder /app/product-service /app/product-service
+
+RUN mkdir -p /app/configs
+VOLUME /app/configs
+
+EXPOSE 8008
+
+ENTRYPOINT ["sh", "-c", "if [ -f \"${CONFIG_PATH}\" ]; then ./product-service; elif [ -f \"/app/${CONFIG_PATH}\" ]; then CONFIG_PATH=\"/app/${CONFIG_PATH}\" ./product-service; else echo \"Error: Config file not found. Please mount your config file to configs/ and set CONFIG_PATH env variable\"; exit 1; fi"]

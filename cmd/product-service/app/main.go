@@ -1,12 +1,13 @@
 package main
 
 import (
+	"github.com/autumnterror/volha-backend/internal/product-service/config"
+	"github.com/autumnterror/volha-backend/internal/product-service/grpc"
+	"github.com/autumnterror/volha-backend/internal/product-service/psql"
 	"log"
 	"os"
 	"os/signal"
-	"productService/config"
-	"productService/internal/grpc"
-	"productService/internal/pkg/psql"
+
 	"syscall"
 )
 
@@ -17,9 +18,9 @@ func main() {
 	cfg := config.MustSetup()
 
 	db := psql.MustConnect(cfg)
-	api := psql.Driver{Driver: db.Driver}
 
-	a := grpc.New(cfg, api)
+	a := grpc.New(cfg, db.Driver)
+
 	go a.MustRun()
 	log.Printf("service started and ready to work. Vol.%s\n", vol)
 

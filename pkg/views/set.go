@@ -10,6 +10,7 @@ const (
 	Country
 	ProductColorPhotos
 	Slide
+	Product
 )
 
 func (t Type) String() string {
@@ -24,6 +25,12 @@ func (t Type) String() string {
 		return "Material"
 	case Country:
 		return "Country"
+	case ProductColorPhotos:
+		return "ProductColorPhotos"
+	case Slide:
+		return "Slide"
+	case Product:
+		return "Product"
 	default:
 		return "Unknown"
 	}

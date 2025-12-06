@@ -1,12 +1,12 @@
 package main
 
 import (
-	"gateway/config"
-	"gateway/copyrights"
-	_ "gateway/docs"
-	"gateway/internal/grpc/products"
-	"gateway/internal/net/echo"
-	"gateway/internal/pkg/redis"
+	_ "github.com/autumnterror/volha-backend/docs"
+	"github.com/autumnterror/volha-backend/internal/gateway/config"
+	"github.com/autumnterror/volha-backend/internal/gateway/grpc/products"
+	"github.com/autumnterror/volha-backend/internal/gateway/net/echo"
+	"github.com/autumnterror/volha-backend/internal/gateway/redis"
+
 	"log"
 	"os"
 	"os/signal"
@@ -32,16 +32,10 @@ func main() {
 		log.Panic(err)
 	}
 
-	rds := redis.New(cfg)
+	rds := redis.MustNew(cfg)
 
 	e := echo.New(rds, p, cfg)
 	go e.MustRun()
-
-	if cfg.Mode != "DEV" {
-		if err := copyrights.Info(); err != nil {
-			log.Println(err)
-		}
-	}
 
 	stop := make(chan os.Signal, 1)
 	signal.Notify(stop, syscall.SIGTERM, syscall.SIGINT)

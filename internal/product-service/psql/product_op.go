@@ -105,7 +105,7 @@ func (d Driver) GetProduct(ctx context.Context, id string) (*productsRPC.Product
 	)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
-			return nil, errors.New("product not find")
+			return nil, ErrNotFound
 		}
 		return nil, format.Error(op, err)
 	}
@@ -230,30 +230,12 @@ func (d Driver) SearchProducts(ctx context.Context, filter *productsRPC.ProductS
 		)
 		p := emptyProduct
 		if err := rows.Scan(
-			&p.Id,
-			&p.Title,
-			&p.Article,
-			&p.Width,
-			&p.Height,
-			&p.Depth,
-			pq.Array(&p.Photos),
-			&p.Price,
-			&p.Description,
-
-			&p.Brand.Id,
-			&p.Brand.Title,
-
-			&p.Category.Id,
-			&p.Category.Title,
-			&p.Category.Uri,
-
-			&p.Country.Id,
-			&p.Country.Title,
-			&p.Country.Friendly,
-
-			&materialsJSON,
-			&colorsJSON,
-			&similarJSON,
+			&p.Id, &p.Title, &p.Article, &p.Width, &p.Height, &p.Depth,
+			pq.Array(&p.Photos), &p.Price, &p.Description,
+			&p.Brand.Id, &p.Brand.Title,
+			&p.Category.Id, &p.Category.Title, &p.Category.Uri,
+			&p.Country.Id, &p.Country.Title, &p.Country.Friendly,
+			&materialsJSON, &colorsJSON, &similarJSON,
 		); err != nil {
 			log.Error(op, "", err)
 			continue

@@ -32,11 +32,11 @@ func (d Driver) GetDictionaries(ctx context.Context, idCat string) (*productsRPC
 	defer rows.Close()
 
 	result := &productsRPC.Dictionaries{
-		Brands:     &productsRPC.BrandList{Items: []*productsRPC.Brand{}},
-		Categories: &productsRPC.CategoryList{Items: []*productsRPC.Category{}},
-		Countries:  &productsRPC.CountryList{Items: []*productsRPC.Country{}},
-		Materials:  &productsRPC.MaterialList{Items: []*productsRPC.Material{}},
-		Colors:     &productsRPC.ColorList{Items: []*productsRPC.Color{}},
+		Brands:     []*productsRPC.Brand{},
+		Categories: []*productsRPC.Category{},
+		Countries:  []*productsRPC.Country{},
+		Materials:  []*productsRPC.Material{},
+		Colors:     []*productsRPC.Color{},
 		MinPrice:   0,
 		MaxPrice:   0,
 		MinWidth:   0,
@@ -55,15 +55,15 @@ func (d Driver) GetDictionaries(ctx context.Context, idCat string) (*productsRPC
 
 		switch typ {
 		case "brand":
-			result.Brands.Items = append(result.Brands.Items, &productsRPC.Brand{Id: id, Title: field1})
+			result.Brands = append(result.Brands, &productsRPC.Brand{Id: id, Title: field1})
 		case "category":
-			result.Categories.Items = append(result.Categories.Items, &productsRPC.Category{Id: id, Title: field1, Uri: field2})
+			result.Categories = append(result.Categories, &productsRPC.Category{Id: id, Title: field1, Uri: field2})
 		case "country":
-			result.Countries.Items = append(result.Countries.Items, &productsRPC.Country{Id: id, Title: field1, Friendly: field2})
+			result.Countries = append(result.Countries, &productsRPC.Country{Id: id, Title: field1, Friendly: field2})
 		case "material":
-			result.Materials.Items = append(result.Materials.Items, &productsRPC.Material{Id: id, Title: field1})
+			result.Materials = append(result.Materials, &productsRPC.Material{Id: id, Title: field1})
 		case "color":
-			result.Colors.Items = append(result.Colors.Items, &productsRPC.Color{Id: id, Title: field1, Hex: field2})
+			result.Colors = append(result.Colors, &productsRPC.Color{Id: id, Title: field1, Hex: field2})
 		case "stats":
 			if minPrice, err := strconv.Atoi(field1); err == nil {
 				result.MinPrice = int32(minPrice)

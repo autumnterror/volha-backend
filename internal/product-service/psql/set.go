@@ -5,6 +5,7 @@ import (
 	"database/sql"
 	"errors"
 	productsRPC "github.com/autumnterror/volha-backend/pkg/proto/gen"
+	"github.com/autumnterror/volha-backend/pkg/views"
 )
 
 var (
@@ -23,6 +24,28 @@ type SqlRepo interface {
 
 type Driver struct {
 	Driver SqlRepo
+}
+
+type Repo interface {
+	FilterProducts(ctx context.Context, filter *productsRPC.ProductFilter) ([]*productsRPC.Product, error)
+	SearchProducts(ctx context.Context, filter *productsRPC.ProductSearch) ([]*productsRPC.Product, error)
+
+	GetAllProducts(ctx context.Context, start, end int) ([]*productsRPC.Product, error)
+	GetProduct(ctx context.Context, id string) (*productsRPC.Product, error)
+	CreateProduct(ctx context.Context, p *productsRPC.ProductId) error
+	UpdateProduct(ctx context.Context, p *productsRPC.ProductId) error
+	DeleteProduct(ctx context.Context, id string) error
+
+	GetDictionaries(ctx context.Context, idCat string) (*productsRPC.Dictionaries, error)
+
+	GetAll(ctx context.Context, _type views.Type) (any, error)
+	Get(ctx context.Context, id string, _type views.Type) (any, error)
+	Create(ctx context.Context, obj any, _type views.Type) error
+	Update(ctx context.Context, obj any, _type views.Type) error
+	Delete(ctx context.Context, id string, _type views.Type) error
+
+	GetProductColorPhotos(ctx context.Context, productID string, colorID string) (any, error)
+	DeleteProductColorPhotos(ctx context.Context, productID string, colorID string) error
 }
 
 var emptyProduct = productsRPC.Product{

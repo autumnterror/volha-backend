@@ -53,6 +53,11 @@ const (
 	Products_DeleteColor_FullMethodName                = "/products.Products/DeleteColor"
 	Products_GetAllColors_FullMethodName               = "/products.Products/GetAllColors"
 	Products_GetColor_FullMethodName                   = "/products.Products/GetColor"
+	Products_CreateSlide_FullMethodName                = "/products.Products/CreateSlide"
+	Products_UpdateSlide_FullMethodName                = "/products.Products/UpdateSlide"
+	Products_DeleteSlide_FullMethodName                = "/products.Products/DeleteSlide"
+	Products_GetAllSlides_FullMethodName               = "/products.Products/GetAllSlides"
+	Products_GetSlide_FullMethodName                   = "/products.Products/GetSlide"
 	Products_CreateProductColorPhotos_FullMethodName   = "/products.Products/CreateProductColorPhotos"
 	Products_UpdateProductColorPhotos_FullMethodName   = "/products.Products/UpdateProductColorPhotos"
 	Products_DeleteProductColorPhotos_FullMethodName   = "/products.Products/DeleteProductColorPhotos"
@@ -70,7 +75,7 @@ type ProductsClient interface {
 	CreateProduct(ctx context.Context, in *ProductId, opts ...grpc.CallOption) (*emptypb.Empty, error)
 	UpdateProduct(ctx context.Context, in *ProductId, opts ...grpc.CallOption) (*emptypb.Empty, error)
 	DeleteProduct(ctx context.Context, in *Id, opts ...grpc.CallOption) (*emptypb.Empty, error)
-	GetAllProducts(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*ProductList, error)
+	GetAllProducts(ctx context.Context, in *Pagination, opts ...grpc.CallOption) (*ProductList, error)
 	GetProduct(ctx context.Context, in *Id, opts ...grpc.CallOption) (*Product, error)
 	FilterProducts(ctx context.Context, in *ProductFilter, opts ...grpc.CallOption) (*ProductList, error)
 	// Brands
@@ -103,6 +108,12 @@ type ProductsClient interface {
 	DeleteColor(ctx context.Context, in *Id, opts ...grpc.CallOption) (*emptypb.Empty, error)
 	GetAllColors(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*ColorList, error)
 	GetColor(ctx context.Context, in *Id, opts ...grpc.CallOption) (*Color, error)
+	// Slides
+	CreateSlide(ctx context.Context, in *Slide, opts ...grpc.CallOption) (*emptypb.Empty, error)
+	UpdateSlide(ctx context.Context, in *Slide, opts ...grpc.CallOption) (*emptypb.Empty, error)
+	DeleteSlide(ctx context.Context, in *Id, opts ...grpc.CallOption) (*emptypb.Empty, error)
+	GetAllSlides(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*SlideList, error)
+	GetSlide(ctx context.Context, in *Id, opts ...grpc.CallOption) (*Slide, error)
 	// Product Color Photos
 	CreateProductColorPhotos(ctx context.Context, in *ProductColorPhotos, opts ...grpc.CallOption) (*emptypb.Empty, error)
 	UpdateProductColorPhotos(ctx context.Context, in *ProductColorPhotos, opts ...grpc.CallOption) (*emptypb.Empty, error)
@@ -169,7 +180,7 @@ func (c *productsClient) DeleteProduct(ctx context.Context, in *Id, opts ...grpc
 	return out, nil
 }
 
-func (c *productsClient) GetAllProducts(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*ProductList, error) {
+func (c *productsClient) GetAllProducts(ctx context.Context, in *Pagination, opts ...grpc.CallOption) (*ProductList, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(ProductList)
 	err := c.cc.Invoke(ctx, Products_GetAllProducts_FullMethodName, in, out, cOpts...)
@@ -449,6 +460,56 @@ func (c *productsClient) GetColor(ctx context.Context, in *Id, opts ...grpc.Call
 	return out, nil
 }
 
+func (c *productsClient) CreateSlide(ctx context.Context, in *Slide, opts ...grpc.CallOption) (*emptypb.Empty, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(emptypb.Empty)
+	err := c.cc.Invoke(ctx, Products_CreateSlide_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *productsClient) UpdateSlide(ctx context.Context, in *Slide, opts ...grpc.CallOption) (*emptypb.Empty, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(emptypb.Empty)
+	err := c.cc.Invoke(ctx, Products_UpdateSlide_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *productsClient) DeleteSlide(ctx context.Context, in *Id, opts ...grpc.CallOption) (*emptypb.Empty, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(emptypb.Empty)
+	err := c.cc.Invoke(ctx, Products_DeleteSlide_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *productsClient) GetAllSlides(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*SlideList, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(SlideList)
+	err := c.cc.Invoke(ctx, Products_GetAllSlides_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *productsClient) GetSlide(ctx context.Context, in *Id, opts ...grpc.CallOption) (*Slide, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(Slide)
+	err := c.cc.Invoke(ctx, Products_GetSlide_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *productsClient) CreateProductColorPhotos(ctx context.Context, in *ProductColorPhotos, opts ...grpc.CallOption) (*emptypb.Empty, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(emptypb.Empty)
@@ -509,7 +570,7 @@ type ProductsServer interface {
 	CreateProduct(context.Context, *ProductId) (*emptypb.Empty, error)
 	UpdateProduct(context.Context, *ProductId) (*emptypb.Empty, error)
 	DeleteProduct(context.Context, *Id) (*emptypb.Empty, error)
-	GetAllProducts(context.Context, *emptypb.Empty) (*ProductList, error)
+	GetAllProducts(context.Context, *Pagination) (*ProductList, error)
 	GetProduct(context.Context, *Id) (*Product, error)
 	FilterProducts(context.Context, *ProductFilter) (*ProductList, error)
 	// Brands
@@ -542,6 +603,12 @@ type ProductsServer interface {
 	DeleteColor(context.Context, *Id) (*emptypb.Empty, error)
 	GetAllColors(context.Context, *emptypb.Empty) (*ColorList, error)
 	GetColor(context.Context, *Id) (*Color, error)
+	// Slides
+	CreateSlide(context.Context, *Slide) (*emptypb.Empty, error)
+	UpdateSlide(context.Context, *Slide) (*emptypb.Empty, error)
+	DeleteSlide(context.Context, *Id) (*emptypb.Empty, error)
+	GetAllSlides(context.Context, *emptypb.Empty) (*SlideList, error)
+	GetSlide(context.Context, *Id) (*Slide, error)
 	// Product Color Photos
 	CreateProductColorPhotos(context.Context, *ProductColorPhotos) (*emptypb.Empty, error)
 	UpdateProductColorPhotos(context.Context, *ProductColorPhotos) (*emptypb.Empty, error)
@@ -573,7 +640,7 @@ func (UnimplementedProductsServer) UpdateProduct(context.Context, *ProductId) (*
 func (UnimplementedProductsServer) DeleteProduct(context.Context, *Id) (*emptypb.Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DeleteProduct not implemented")
 }
-func (UnimplementedProductsServer) GetAllProducts(context.Context, *emptypb.Empty) (*ProductList, error) {
+func (UnimplementedProductsServer) GetAllProducts(context.Context, *Pagination) (*ProductList, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetAllProducts not implemented")
 }
 func (UnimplementedProductsServer) GetProduct(context.Context, *Id) (*Product, error) {
@@ -656,6 +723,21 @@ func (UnimplementedProductsServer) GetAllColors(context.Context, *emptypb.Empty)
 }
 func (UnimplementedProductsServer) GetColor(context.Context, *Id) (*Color, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetColor not implemented")
+}
+func (UnimplementedProductsServer) CreateSlide(context.Context, *Slide) (*emptypb.Empty, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CreateSlide not implemented")
+}
+func (UnimplementedProductsServer) UpdateSlide(context.Context, *Slide) (*emptypb.Empty, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UpdateSlide not implemented")
+}
+func (UnimplementedProductsServer) DeleteSlide(context.Context, *Id) (*emptypb.Empty, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DeleteSlide not implemented")
+}
+func (UnimplementedProductsServer) GetAllSlides(context.Context, *emptypb.Empty) (*SlideList, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetAllSlides not implemented")
+}
+func (UnimplementedProductsServer) GetSlide(context.Context, *Id) (*Slide, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetSlide not implemented")
 }
 func (UnimplementedProductsServer) CreateProductColorPhotos(context.Context, *ProductColorPhotos) (*emptypb.Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreateProductColorPhotos not implemented")
@@ -784,7 +866,7 @@ func _Products_DeleteProduct_Handler(srv interface{}, ctx context.Context, dec f
 }
 
 func _Products_GetAllProducts_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(emptypb.Empty)
+	in := new(Pagination)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -796,7 +878,7 @@ func _Products_GetAllProducts_Handler(srv interface{}, ctx context.Context, dec 
 		FullMethod: Products_GetAllProducts_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ProductsServer).GetAllProducts(ctx, req.(*emptypb.Empty))
+		return srv.(ProductsServer).GetAllProducts(ctx, req.(*Pagination))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -1287,6 +1369,96 @@ func _Products_GetColor_Handler(srv interface{}, ctx context.Context, dec func(i
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Products_CreateSlide_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(Slide)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ProductsServer).CreateSlide(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Products_CreateSlide_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ProductsServer).CreateSlide(ctx, req.(*Slide))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Products_UpdateSlide_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(Slide)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ProductsServer).UpdateSlide(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Products_UpdateSlide_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ProductsServer).UpdateSlide(ctx, req.(*Slide))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Products_DeleteSlide_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(Id)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ProductsServer).DeleteSlide(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Products_DeleteSlide_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ProductsServer).DeleteSlide(ctx, req.(*Id))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Products_GetAllSlides_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(emptypb.Empty)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ProductsServer).GetAllSlides(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Products_GetAllSlides_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ProductsServer).GetAllSlides(ctx, req.(*emptypb.Empty))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Products_GetSlide_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(Id)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ProductsServer).GetSlide(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Products_GetSlide_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ProductsServer).GetSlide(ctx, req.(*Id))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _Products_CreateProductColorPhotos_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(ProductColorPhotos)
 	if err := dec(in); err != nil {
@@ -1515,6 +1687,26 @@ var Products_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "GetColor",
 			Handler:    _Products_GetColor_Handler,
+		},
+		{
+			MethodName: "CreateSlide",
+			Handler:    _Products_CreateSlide_Handler,
+		},
+		{
+			MethodName: "UpdateSlide",
+			Handler:    _Products_UpdateSlide_Handler,
+		},
+		{
+			MethodName: "DeleteSlide",
+			Handler:    _Products_DeleteSlide_Handler,
+		},
+		{
+			MethodName: "GetAllSlides",
+			Handler:    _Products_GetAllSlides_Handler,
+		},
+		{
+			MethodName: "GetSlide",
+			Handler:    _Products_GetSlide_Handler,
 		},
 		{
 			MethodName: "CreateProductColorPhotos",

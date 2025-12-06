@@ -4,10 +4,10 @@ package products;
 
 option go_package = "github.com/autumnterror/volha-backend;productsRPC";
 
-message ProductList {
-  repeated Product products = 1;
+message Pagination {
+  int32 start = 1;
+  int32 finish = 2;
 }
-
 message Id {
   string id = 1;
 }
@@ -20,6 +20,10 @@ message ProductSearch {
   string id = 1;
   string title = 2;
   string article = 3;
+}
+
+message ProductList {
+  repeated Product items = 1;
 }
 
 message BrandList {
@@ -42,6 +46,10 @@ message ColorList {
   repeated Color items = 1;
 }
 
+message SlideList {
+  repeated Slide items = 1;
+}
+
 message ProductColorPhotos {
   string product_id = 1;
   string color_id = 2;
@@ -58,7 +66,7 @@ message ProductColorPhotosList {
 }
 
 message PhotoList {
-  repeated string photos = 1;
+  repeated string items = 1;
 }
 
 message Product {
@@ -118,11 +126,11 @@ message ProductFilter {
 }
 
 message Dictionaries {
-  BrandList brands = 1;
-  CategoryList categories = 2;
-  CountryList countries = 3;
-  MaterialList materials = 4;
-  ColorList colors = 5;
+  repeated Brand brands = 1;
+  repeated Category categories = 2;
+  repeated Country countries = 3;
+  repeated Material materials = 4;
+  repeated Color colors = 5;
 
   int32 min_price = 6;
   int32 max_price = 7;

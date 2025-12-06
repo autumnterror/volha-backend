@@ -267,7 +267,7 @@ func TestGoodSimpleTables(t *testing.T) {
 
 		assert.NoError(t, driver.Update(ctx, updated, views.ProductColorPhotos))
 
-		all, err = driver.GetProductColorPhotos(ctx, c.ProductId, c.ColorId, views.ProductColorPhotos)
+		all, err = driver.GetProductColorPhotos(ctx, c.ProductId, c.ColorId)
 		assert.NoError(t, err)
 		log.Println("product color photos after update:", all)
 
