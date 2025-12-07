@@ -128,8 +128,29 @@ func (a *Apis) DeleteFile(c echo.Context) error {
 		return c.JSON(http.StatusBadRequest, views.SWGError{Error: "empty filename"})
 	}
 
+	if err := deleteFile(filename); err != nil {
+		switch err {
+		case ErrFileName:
+			return c.JSON(http.StatusBadRequest, views.SWGError{Error: "invalid filename"})
+		case ErrFileNotFound:
+			return c.JSON(http.StatusNotFound, views.SWGError{Error: "file not found"})
+		default:
+			log.Error(op, "", err)
+			return c.JSON(http.StatusInternalServerError, views.SWGError{Error: "check logs"})
+		}
+	}
+
+	log.Green(op)
+	return c.JSON(http.StatusOK, views.SWGMessage{Message: "file delete successfully"})
+}
+
+var ErrFileName = errors.New("invalid filename")
+var ErrFileNotFound = errors.New("file not found")
+
+func deleteFile(filename string) error {
+
 	if strings.Contains(filename, "/") || strings.Contains(filename, "\\") {
-		return c.JSON(http.StatusBadRequest, views.SWGError{Error: "invalid filename"})
+		return ErrFileName
 	}
 
 	fullPath := filepath.Clean(filepath.Join(filepath.Clean(ImagesDir), filename))
@@ -137,12 +158,9 @@ func (a *Apis) DeleteFile(c echo.Context) error {
 	err := os.Remove(fullPath)
 	if err != nil {
 		if errors.Is(err, os.ErrNotExist) {
-			return c.JSON(http.StatusNotFound, views.SWGError{Error: "file not found"})
+			return ErrFileNotFound
 		}
-		log.Error(op, "", err)
-		return c.JSON(http.StatusInternalServerError, views.SWGError{Error: err.Error()})
+		return err
 	}
-
-	log.Green(op)
-	return c.JSON(http.StatusOK, views.SWGMessage{Message: "file delete successfully"})
+	return nil
 }

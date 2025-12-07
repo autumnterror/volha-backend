@@ -210,7 +210,6 @@ func (d Driver) Create(
 			case "23503": // foreign_key_violation
 				return format.Error(op, ErrForeignKey)
 			}
-			return format.Error(op, ErrAlreadyExists)
 		}
 		return format.Error(op, err)
 	}

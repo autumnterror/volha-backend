@@ -410,13 +410,13 @@ func (a *Apis) mapGRPCError(op string, err error) (int, views.SWGError) {
 
 	switch st.Code() {
 	case codes.InvalidArgument:
-		return http.StatusBadRequest, views.SWGError{Error: st.Message()}
+		return http.StatusBadRequest, views.SWGError{Error: "input error"}
 	case codes.FailedPrecondition:
-		return http.StatusBadRequest, views.SWGError{Error: st.Message()}
+		return http.StatusBadRequest, views.SWGError{Error: "input error"}
 	case codes.AlreadyExists:
-		return http.StatusConflict, views.SWGError{Error: st.Message()}
+		return http.StatusConflict, views.SWGError{Error: "already exists"}
 	case codes.NotFound:
-		return http.StatusNotFound, views.SWGError{Error: st.Message()}
+		return http.StatusNotFound, views.SWGError{Error: "not found"}
 	case codes.Unimplemented, codes.Internal:
 		return http.StatusBadGateway, views.SWGError{Error: "check logs on service"}
 	default:

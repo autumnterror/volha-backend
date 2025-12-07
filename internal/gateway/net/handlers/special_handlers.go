@@ -329,10 +329,63 @@ func (a *Apis) DeleteProductColorPhotos(c echo.Context) error {
 		return c.JSON(http.StatusBadRequest, views.SWGError{Error: "bad JSON"})
 	}
 
+	pcp, err := a.apiProduct.API.GetPhotosByProductAndColor(ctx, &pcpId)
+	if err != nil {
+		code, swg := a.mapGRPCError(op, err)
+		return c.JSON(code, swg)
+	}
+
 	if _, err := a.apiProduct.API.DeleteProductColorPhotos(ctx, &pcpId); err != nil {
 		code, swg := a.mapGRPCError(op, err)
 		return c.JSON(code, swg)
 	}
+
+	for _, filename := range pcp.Items {
+		err := deleteFile(filename)
+		if err != nil {
+			log.Error(op, "delete photo", err)
+		}
+	}
+
 	log.Green(op)
 	return c.JSON(http.StatusOK, views.SWGMessage{Message: "product color photos"})
+}
+
+// DeleteProduct godoc
+// @Summary Удалить продукт
+// @Description Удаляет продукт по ID
+// @Tags product
+// @Produce json
+// @Param id query string true "ID продукта"
+// @Success 200 {object} views.SWGMessage "успех"
+// @Failure 400 {object} views.SWGError "неправильный ввод"
+// @Failure 404 {object} views.SWGError "не найдено"
+// @Failure 502 {object} views.SWGError "ошибка в микросервисе"
+// @Router /api/product [delete]
+func (a *Apis) DeleteProduct(c echo.Context) error {
+	const op = "handlers.DeleteProduct"
+	log.Blue(op)
+
+	r, code, err := a.get(c, op, views.Product)
+	if code != http.StatusOK {
+		return c.JSON(code, err)
+	}
+
+	pr, ok := r.(*productsRPC.Product)
+	if !ok {
+		return c.JSON(http.StatusInternalServerError, views.SWGError{Error: "invalid type"})
+	}
+
+	if r, code, err := a.delete(c, op, views.Product); code != http.StatusOK {
+		return c.JSON(code, err)
+	} else {
+		for _, filename := range pr.GetPhotos() {
+			err := deleteFile(filename)
+			if err != nil {
+				log.Error(op, "delete photo", err)
+			}
+		}
+		log.Green(op)
+		return c.JSON(code, r)
+	}
 }

@@ -187,8 +187,10 @@ func (a *Apis) DeleteCategory(c echo.Context) error {
 		return c.JSON(code, err)
 	} else {
 		log.Green(op)
+
 		return c.JSON(code, r)
 	}
+
 }
 
 // GetAllCategories godoc
@@ -721,29 +723,6 @@ func (a *Apis) UpdateProduct(c echo.Context) error {
 	log.Blue(op)
 
 	if r, code, err := a.update(c, op, views.Product); code != http.StatusOK {
-		return c.JSON(code, err)
-	} else {
-		log.Green(op)
-		return c.JSON(code, r)
-	}
-}
-
-// DeleteProduct godoc
-// @Summary Удалить продукт
-// @Description Удаляет продукт по ID
-// @Tags product
-// @Produce json
-// @Param id query string true "ID продукта"
-// @Success 200 {object} views.SWGMessage "успех"
-// @Failure 400 {object} views.SWGError "неправильный ввод"
-// @Failure 404 {object} views.SWGError "не найдено"
-// @Failure 502 {object} views.SWGError "ошибка в микросервисе"
-// @Router /api/product [delete]
-func (a *Apis) DeleteProduct(c echo.Context) error {
-	const op = "handlers.DeleteProduct"
-	log.Blue(op)
-
-	if r, code, err := a.delete(c, op, views.Product); code != http.StatusOK {
 		return c.JSON(code, err)
 	} else {
 		log.Green(op)

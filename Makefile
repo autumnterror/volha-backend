@@ -28,6 +28,10 @@ bld-a:
 	docker build -t zitrax78/volha-gateway --file ./build/gateway/dockerfile .
 	docker build -t zitrax78/product-service --file ./build/product-service/dockerfile .
 	docker build -t zitrax78/dumper --file ./build/dumper/dockerfile .
+bld-a-mac:
+	docker build --platform linux/amd64 -t zitrax78/volha-gateway --file ./build/gateway/dockerfile .
+	docker build --platform linux/amd64 -t zitrax78/product-service --file ./build/product-service/dockerfile .
+	docker build --platform linux/amd64 -t zitrax78/dumper --file ./build/dumper/dockerfile .
 push-a:
 	docker push zitrax78/volha-gateway
 	docker push zitrax78/product-service
