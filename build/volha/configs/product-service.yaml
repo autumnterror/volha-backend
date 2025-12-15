@@ -1,4 +1,4 @@
-DataSource: "productsdb"
-PortPostgres: 5432
+data_source: "volha-productsdb"
+port_postgres: 5432
 port: 8008
 mode: "PROD"

@@ -1,9 +1,9 @@
 services:
-  dumper:
-    container_name: dumper
+  volha-dumper:
+    container_name: volha-dumper
     image: zitrax78/dumper:latest
     depends_on:
-      - productsdb
+      - volha-productsdb
     environment:
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
@@ -13,8 +13,8 @@ services:
     volumes:
       - ./dumps:/dumps
 
-  redis:
-    container_name: redis
+  volha-redis:
+    container_name: volha-redis
     image: redis:latest
     ports:
       - "6379:6379"
@@ -22,8 +22,8 @@ services:
     command: --requirepass ${REDISPASSWD}
     env_file: .env
 
-  productsdb:
-    container_name: productsdb
+  volha-productsdb:
+    container_name: volha-productsdb
     image: postgres:latest
     ports:
       - "5432:5432"
@@ -35,16 +35,21 @@ services:
       POSTGRES_DB: ${POSTGRES_DB}
     restart: unless-stopped
     env_file: .env
-  product-service:
-    container_name: product-service
+
+  volha-product-service:
+    container_name: volha-product-service
     image: zitrax78/product-service:latest
     ports:
       - "8008:8008"
     volumes:
       - ./configs:/app/configs
+      - .env:/app/.env
     environment:
       CONFIG_PATH: configs/product-service.yaml
     restart: unless-stopped
+    depends_on:
+      - volha-productsdb
+
   volha-gateway:
     container_name: volha-gateway
     image: zitrax78/volha-gateway:latest
@@ -53,9 +58,12 @@ services:
     volumes:
       - ./configs:/app/configs
       - ./images:/app/images
+      - .env:/app/.env
     environment:
       CONFIG_PATH: configs/volha-gateway.yaml
     restart: unless-stopped
-
+    depends_on:
+      - volha-product-service
+      - volha-redis
 volumes:
   postgres-data:

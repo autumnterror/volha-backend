@@ -1,3 +1,4 @@
-conn_str: "postgres://postgres:zzz_pRR0w0RRq_vvv@localhost:5432/productsdb?sslmode=disable"
+data_source: "localhost"
+port_postgres: 5432
 port: 8008
 mode: "PROD"

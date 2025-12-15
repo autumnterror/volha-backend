@@ -2,6 +2,7 @@ package service
 
 import (
 	"errors"
+
 	"github.com/autumnterror/volha-backend/internal/product-service/domain"
 	"github.com/autumnterror/volha-backend/pkg/views"
 	"github.com/rs/xid"
@@ -153,14 +154,14 @@ func validateProductPayload(p *domain.ProductId) error {
 	if p.Article == "" {
 		return errors.New("product article is empty")
 	}
-	if p.Brand == "" {
-		return errors.New("brand id is empty")
+	if err := validateID(p.Brand); err != nil {
+		return errors.New("brand id is invalid")
 	}
-	if p.Category == "" {
-		return errors.New("category id is empty")
+	if err := validateID(p.Category); err != nil {
+		return errors.New("category id is invalid")
 	}
-	if p.Country == "" {
-		return errors.New("country id is empty")
+	if err := validateID(p.Country); err != nil {
+		return errors.New("country id is invalid")
 	}
 	if p.Price <= 0 {
 		return errors.New("price must be greater than zero")
@@ -171,6 +172,12 @@ func validateProductPayload(p *domain.ProductId) error {
 	if len(p.Photos) == 0 {
 		return errors.New("photos are empty")
 	}
+	for _, s := range p.Seems {
+		if err := validateID(s); err != nil {
+			return errors.New("seem id is invalid")
+		}
+	}
+
 	return nil
 }
 

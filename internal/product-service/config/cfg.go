@@ -62,7 +62,8 @@ func setup() (*Config, error) {
 	}
 
 	if cfg.Mode == "DEV" {
-		log.Println(format.Struct(cfg))
+		log.Println(format.Struct(cfg), fmt.Sprintf("postgres://%s:%s@%s:%d/%s?sslmode=disable",
+			user, pw, cfg.DataSource, cfg.PortPostgres, db))
 	}
 
 	return &Config{

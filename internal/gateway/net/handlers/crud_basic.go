@@ -2,7 +2,8 @@ package handlers
 
 import (
 	"context"
-	"github.com/autumnterror/volha-backend/api/proto/gen"
+
+	productsRPC "github.com/autumnterror/volha-backend/api/proto/gen"
 
 	"github.com/autumnterror/breezynotes/pkg/log"
 	"github.com/autumnterror/breezynotes/pkg/utils/format"
@@ -410,7 +411,7 @@ func (a *Apis) mapGRPCError(op string, err error) (int, views.SWGError) {
 
 	switch st.Code() {
 	case codes.InvalidArgument:
-		return http.StatusBadRequest, views.SWGError{Error: "input error"}
+		return http.StatusBadRequest, views.SWGError{Error: err.Error()}
 	case codes.FailedPrecondition:
 		return http.StatusBadRequest, views.SWGError{Error: "input error"}
 	case codes.AlreadyExists:
