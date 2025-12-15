@@ -28,14 +28,17 @@ bld-a:
 	docker build -t zitrax78/product-service --file ./build/docker/product-service/dockerfile .
 	docker build -t zitrax78/dumper --file ./build/docker/dumper/dockerfile .
 bld-a-mac:
-	docker build --platform linux/amd64 -t zitrax78/volha-gateway --file ./build/gateway/dockerfile .
-	docker build --platform linux/amd64 -t zitrax78/product-service --file ./build/product-service/dockerfile .
-	docker build --platform linux/amd64 -t zitrax78/dumper --file ./build/dumper/dockerfile .
+	docker build --platform linux/amd64 -t zitrax78/volha-gateway --file ./build/docker/gateway/dockerfile .
+	docker build --platform linux/amd64 -t zitrax78/product-service --file ./build/docker/product-service/dockerfile .
+	docker build --platform linux/amd64 -t zitrax78/dumper --file ./build/docker/dumper/dockerfile .
 push-a:
 	docker push zitrax78/volha-gateway
 	docker push zitrax78/product-service
 	docker push zitrax78/dumper
-
+pull-a:
+	docker pull zitrax78/volha-gateway
+	docker pull zitrax78/product-service
+	docker pull zitrax78/dumper
 #-------------------------test-------------------------
 t-m:
 	go test -run $(METHOD) ./... -v
