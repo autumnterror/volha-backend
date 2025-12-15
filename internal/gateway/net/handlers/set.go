@@ -1,7 +1,7 @@
 package handlers
 
 import (
-	productsRPC "github.com/autumnterror/volha-backend/pkg/proto/gen"
+	"github.com/autumnterror/volha-backend/api/proto/gen"
 	"github.com/autumnterror/volha-backend/pkg/views"
 	"github.com/labstack/echo/v4"
 	"github.com/rs/xid"

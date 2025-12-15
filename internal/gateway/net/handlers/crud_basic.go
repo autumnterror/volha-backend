@@ -2,10 +2,10 @@ package handlers
 
 import (
 	"context"
+	"github.com/autumnterror/volha-backend/api/proto/gen"
 
 	"github.com/autumnterror/breezynotes/pkg/log"
 	"github.com/autumnterror/breezynotes/pkg/utils/format"
-	productsRPC "github.com/autumnterror/volha-backend/pkg/proto/gen"
 	"github.com/autumnterror/volha-backend/pkg/views"
 	"github.com/rs/xid"
 
@@ -391,7 +391,7 @@ func (a *Apis) delete(c echo.Context, op string, _type views.Type) (any, int, vi
 //INTERNAL IN EVERY
 //GetAll ErrUnknownType 	Unimplemented
 //Get ErrUnknownType ErrNotFound 	Unimplemented
-//GetProductColorPhotos ErrNotFound 	NotFound
+//GetPhotosByProductColor ErrNotFound 	NotFound
 //Create ErrInvalidType ErrUnknownType ErrAlreadyExists ErrForeignKey 	InvalidArgument Unimplemented AlreadyExists FailedPrecondition
 //Update ErrInvalidType ErrUnknownType ErrNotFound 		InvalidArgument Unimplemented NotFound
 //Delete ErrUnknownType ErrNotFound 	Unimplemented NotFound

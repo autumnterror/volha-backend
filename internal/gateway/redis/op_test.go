@@ -2,8 +2,8 @@ package redis
 
 import (
 	"github.com/autumnterror/breezynotes/pkg/log"
+	"github.com/autumnterror/volha-backend/api/proto/gen"
 	"github.com/autumnterror/volha-backend/internal/gateway/config"
-	productsRPC "github.com/autumnterror/volha-backend/pkg/proto/gen"
 	"github.com/stretchr/testify/assert"
 
 	"testing"
@@ -12,7 +12,7 @@ import (
 func TestDictionariesGood(t *testing.T) {
 	c := MustNew(config.Test())
 
-	td := &productsRPC.Dictionaries{
+	td := &productsRPC.productsRPC{
 		Brands:     []*productsRPC.Brand{},
 		Categories: []*productsRPC.Category{},
 		Countries:  []*productsRPC.Country{},

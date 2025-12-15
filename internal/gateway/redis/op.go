@@ -5,7 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/autumnterror/breezynotes/pkg/utils/format"
-	productsRPC "github.com/autumnterror/volha-backend/pkg/proto/gen"
+	"github.com/autumnterror/volha-backend/api/proto/gen"
 
 	"github.com/redis/go-redis/v9"
 	"time"

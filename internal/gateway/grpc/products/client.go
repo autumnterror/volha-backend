@@ -4,8 +4,8 @@ import (
 	"context"
 	"fmt"
 	"github.com/autumnterror/breezynotes/pkg/utils/format"
+	"github.com/autumnterror/volha-backend/api/proto/gen"
 	"github.com/autumnterror/volha-backend/internal/gateway/config"
-	productsRPC "github.com/autumnterror/volha-backend/pkg/proto/gen"
 
 	grpcretry "github.com/grpc-ecosystem/go-grpc-middleware/v2/interceptors/retry"
 
