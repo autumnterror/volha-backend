@@ -10,3 +10,4 @@ test.go
 .idea
 qodana.yaml
 migrator
+build/volha/images/*.jpg
