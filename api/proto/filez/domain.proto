@@ -50,6 +50,10 @@ message SlideList {
   repeated Slide items = 1;
 }
 
+message ArticleList {
+  repeated Article items = 1;
+}
+
 message ProductColorPhotos {
   string product_id = 1;
   string color_id = 2;
@@ -85,6 +89,7 @@ message Product {
   repeated Product seems = 13;
   int32 price = 14;
   string description = 15;
+  int32 views = 16;
 }
 
 message ProductId {
@@ -103,6 +108,7 @@ message ProductId {
   repeated string seems = 13;
   int32 price = 14;
   string description = 15;
+  int32 views = 16;
 }
 
 message ProductFilter {
@@ -177,4 +183,12 @@ message Slide {
   string img = 3;
   string img762 = 4;
 }
+
+message Article {
+  string id = 1;
+  string img = 2;
+  string title = 3;
+  string text = 4;
+}
+
 

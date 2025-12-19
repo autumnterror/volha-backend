@@ -19,6 +19,7 @@ type ProductRepo interface {
 	GetProduct(ctx context.Context, id string) (*domain.Product, error)
 	CreateProduct(ctx context.Context, p *domain.ProductId) error
 	UpdateProduct(ctx context.Context, p *domain.ProductId) error
+	IncrementViews(ctx context.Context, id string) error
 	DeleteProduct(ctx context.Context, id string) error
 	SearchProducts(ctx context.Context, filter *domain.ProductSearch) ([]*domain.Product, error)
 	FilterProducts(ctx context.Context, filter *domain.ProductFilter) ([]*domain.Product, error)
@@ -46,7 +47,7 @@ func (d Driver) GetAllProducts(ctx context.Context, start, end int) ([]*domain.P
 			materialsJSON, colorsJSON []byte
 			similarJSON               []byte
 		)
-		p := domain.EmptyProduct
+		p := domain.NewEmptyProduct()
 		if err := rows.Scan(
 			&p.Id,
 			&p.Title,
@@ -57,6 +58,7 @@ func (d Driver) GetAllProducts(ctx context.Context, start, end int) ([]*domain.P
 			pq.Array(&p.Photos),
 			&p.Price,
 			&p.Description,
+			&p.Views,
 
 			&p.Brand.Id,
 			&p.Brand.Title,
@@ -107,10 +109,10 @@ func (d Driver) GetProduct(ctx context.Context, id string) (*domain.Product, err
 		materialsJSON, colorsJSON []byte
 		similarJSON               []byte
 	)
-	p := domain.EmptyProduct
+	p := domain.NewEmptyProduct()
 	err := d.Driver.QueryRowContext(ctx, getProductQuery, id).Scan(
 		&p.Id, &p.Title, &p.Article, &p.Width, &p.Height, &p.Depth,
-		pq.Array(&p.Photos), &p.Price, &p.Description,
+		pq.Array(&p.Photos), &p.Price, &p.Description, &p.Views,
 		&p.Brand.Id, &p.Brand.Title,
 		&p.Category.Id, &p.Category.Title, &p.Category.Uri,
 		&p.Country.Id, &p.Country.Title, &p.Country.Friendly,
@@ -145,7 +147,7 @@ func (d Driver) CreateProduct(ctx context.Context, p *domain.ProductId) error {
 		ctx,
 		createProductQuery,
 		p.Id, p.Title, p.Article, p.Brand, p.Category, p.Country, p.Width, p.Height, p.Depth,
-		pq.Array(p.Photos), p.Price, p.Description,
+		pq.Array(p.Photos), p.Price, p.Description, p.Views,
 		pq.Array(p.Materials), pq.Array(p.Colors), pq.Array(p.Seems),
 	)
 	if err != nil {
@@ -171,9 +173,30 @@ func (d Driver) UpdateProduct(ctx context.Context, p *domain.ProductId) error {
 
 	res, err := d.Driver.ExecContext(ctx, updateProductQuery,
 		p.Id, p.Title, p.Article, p.Brand, p.Category, p.Country, p.Width, p.Height, p.Depth,
-		pq.Array(p.Photos), p.Price, p.Description,
+		pq.Array(p.Photos), p.Price, p.Description, p.Views,
 		pq.Array(p.Materials), pq.Array(p.Colors), pq.Array(p.Seems),
 	)
+	if err != nil {
+		return format.Error(op, err)
+	}
+
+	rowsAffected, err := res.RowsAffected()
+	if err != nil {
+		return format.Error(op, err)
+	}
+	if rowsAffected == 0 {
+		return format.Error(op, domain.ErrNotFound)
+	}
+
+	return nil
+}
+
+func (d Driver) IncrementViews(ctx context.Context, id string) error {
+	const op = "PostgresDb.IncrementViews"
+
+	query := `UPDATE products SET views = views + 1 WHERE id = $1`
+
+	res, err := d.Driver.ExecContext(ctx, query, id)
 	if err != nil {
 		return format.Error(op, err)
 	}
@@ -241,7 +264,7 @@ func (d Driver) SearchProducts(ctx context.Context, filter *domain.ProductSearch
 			materialsJSON, colorsJSON []byte
 			similarJSON               []byte
 		)
-		p := domain.EmptyProduct
+		p := domain.NewEmptyProduct()
 		if err := rows.Scan(
 			&p.Id, &p.Title, &p.Article, &p.Width, &p.Height, &p.Depth,
 			pq.Array(&p.Photos), &p.Price, &p.Description,
@@ -358,7 +381,7 @@ func (d Driver) FilterProducts(ctx context.Context, filter *domain.ProductFilter
 	}
 
 	if filter.SortBy != "" {
-		validSort := map[string]bool{"price": true, "width": true, "height": true, "depth": true, "title": true}
+		validSort := map[string]bool{"price": true, "width": true, "height": true, "depth": true, "title": true, "views": true}
 		if validSort[filter.SortBy] {
 			order := "ASC"
 			if strings.ToLower(filter.SortOrder) == "desc" {
@@ -391,7 +414,7 @@ func (d Driver) FilterProducts(ctx context.Context, filter *domain.ProductFilter
 			materialsJSON, colorsJSON []byte
 			similarJSON               []byte
 		)
-		p := domain.EmptyProduct
+		p := domain.NewEmptyProduct()
 		if err := rows.Scan(
 			&p.Id,
 			&p.Title,
@@ -402,6 +425,7 @@ func (d Driver) FilterProducts(ctx context.Context, filter *domain.ProductFilter
 			pq.Array(&p.Photos),
 			&p.Price,
 			&p.Description,
+			&p.Views,
 
 			&p.Brand.Id,
 			&p.Brand.Title,

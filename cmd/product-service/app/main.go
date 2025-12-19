@@ -4,6 +4,7 @@ import (
 	"github.com/autumnterror/volha-backend/internal/product-service/api"
 	"github.com/autumnterror/volha-backend/internal/product-service/config"
 	"github.com/autumnterror/volha-backend/internal/product-service/infra/psql"
+	"github.com/autumnterror/volha-backend/internal/product-service/repository"
 	"github.com/autumnterror/volha-backend/internal/product-service/service"
 	"log"
 	"os"
@@ -17,7 +18,7 @@ func main() {
 
 	cfg := config.MustSetup()
 	//DATABASE
-	db := psql.MustConnect(cfg)
+	db := repository.MustConnect(cfg)
 	rp := psql.NewRepoProvider(db.Driver)
 	tx := psql.NewTxRunner(db.Driver)
 

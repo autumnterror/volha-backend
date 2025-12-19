@@ -2,9 +2,9 @@ package repository
 
 import (
 	"context"
-	"github.com/autumnterror/volha-backend/internal/product-service/infra/psql"
-	"github.com/autumnterror/volha-backend/pkg/views"
 	"testing"
+
+	"github.com/autumnterror/volha-backend/pkg/views"
 
 	"github.com/autumnterror/breezynotes/pkg/log"
 
@@ -20,7 +20,7 @@ func TestProductGood(t *testing.T) {
 	t.Run("product good bad", func(t *testing.T) {
 		t.Parallel()
 
-		db, err := psql.NewConnect(config.Test())
+		db, err := NewConnect(config.Test())
 		assert.NoError(t, err)
 
 		tx, err := db.Driver.Begin()
@@ -59,6 +59,7 @@ func TestProductGood(t *testing.T) {
 			Seems:       []string{},
 			Price:       100,
 			Description: "test",
+			Views:       1000,
 		}))
 
 		p, err := driver.GetAllProducts(ctx, 0, 10)
@@ -77,6 +78,8 @@ func TestProductGood(t *testing.T) {
 		assert.NoError(t, driver.Create(ctx, material, views.Material))
 		assert.NoError(t, driver.Create(ctx, color, views.Color))
 
+		newViews := 10000
+
 		assert.NoError(t, driver.UpdateProduct(ctx, &domain.ProductId{
 			Id:          "test-product",
 			Title:       "new test",
@@ -93,12 +96,17 @@ func TestProductGood(t *testing.T) {
 			Seems:       []string{},
 			Price:       100,
 			Description: "test",
+			Views:       int32(newViews),
 		}))
+
+		assert.NoError(t, driver.IncrementViews(ctx, "test-product"))
 
 		pr, err := driver.GetProduct(ctx, "test-product")
 		if assert.NoError(t, err) {
 			log.Green("product after update ", pr)
 		}
+
+		assert.Equal(t, int32(newViews+1), pr.Views)
 
 		res, err := driver.SearchProducts(ctx, &domain.ProductSearch{
 			Id:      "",
@@ -134,7 +142,7 @@ func TestProductFilters(t *testing.T) {
 
 	ctx := context.Background()
 
-	db, err := psql.NewConnect(config.Test())
+	db, err := NewConnect(config.Test())
 	assert.NoError(t, err)
 
 	tx, err := db.Driver.Begin()
@@ -171,6 +179,7 @@ func TestProductFilters(t *testing.T) {
 		Seems:       []string{},
 		Price:       888,
 		Description: "Filtered",
+		Views:       1000,
 	}
 	assert.NoError(t, driver.CreateProduct(ctx, product))
 
@@ -187,6 +196,7 @@ func TestProductFilters(t *testing.T) {
 		{"by price", domain.ProductFilter{MinPrice: 500, MaxPrice: 1000}},
 		{"with sort asc", domain.ProductFilter{SortBy: "price", SortOrder: "asc"}},
 		{"with sort desc", domain.ProductFilter{SortBy: "width", SortOrder: "desc"}},
+		{"with sort asc", domain.ProductFilter{SortBy: "views", SortOrder: "asc"}},
 		{"with limit and offset", domain.ProductFilter{Limit: 1, Offset: 0}},
 		{"complex", domain.ProductFilter{
 			Brand:     []string{brand.Id},

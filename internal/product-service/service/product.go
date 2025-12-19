@@ -31,7 +31,15 @@ func (s *ProductsService) GetProduct(ctx context.Context, id string) (*domain.Pr
 	if err != nil {
 		return nil, wrapServiceCheck(op, err)
 	}
-	return repo.GetProduct(ctx, id)
+
+	pr, err := repo.GetProduct(ctx, id)
+	if err != nil {
+		return nil, err
+	}
+	if err := repo.IncrementViews(ctx, id); err != nil {
+		return nil, err
+	}
+	return pr, nil
 }
 
 func (s *ProductsService) CreateProduct(ctx context.Context, p *domain.ProductId) error {

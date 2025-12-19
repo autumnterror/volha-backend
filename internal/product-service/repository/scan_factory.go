@@ -113,6 +113,23 @@ func (s *slideScanner) GetList() any {
 	return s.list
 }
 
+type articleScanner struct {
+	list []*domain.Article
+}
+
+func (s *articleScanner) Scan(rows *sql.Rows) error {
+	var a domain.Article
+	if err := rows.Scan(&a.Id, &a.Title, &a.Img, &a.Text); err != nil {
+		return err
+	}
+	s.list = append(s.list, &a)
+	return nil
+}
+
+func (s *articleScanner) GetList() any {
+	return s.list
+}
+
 //-----------------------------------ROW-----------------------------------
 
 type entityScannerRow interface {
@@ -220,4 +237,21 @@ func (s *slideScannerRow) Scan(rows *sql.Row) error {
 
 func (s *slideScannerRow) Get() any {
 	return s.sl
+}
+
+type articleScannerRow struct {
+	a *domain.Article
+}
+
+func (s *articleScannerRow) Scan(rows *sql.Row) error {
+	var a domain.Article
+	if err := rows.Scan(&a.Id, &a.Title, &a.Img, &a.Text); err != nil {
+		return err
+	}
+	s.a = &a
+	return nil
+}
+
+func (s *articleScannerRow) Get() any {
+	return s.a
 }

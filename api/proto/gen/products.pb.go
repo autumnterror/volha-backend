@@ -25,7 +25,7 @@ var File_products_proto protoreflect.FileDescriptor
 
 const file_products_proto_rawDesc = "" +
 	"\n" +
-	"\x0eproducts.proto\x12\bproducts\x1a\x1bgoogle/protobuf/empty.proto\x1a\fdomain.proto2\xa1\x14\n" +
+	"\x0eproducts.proto\x12\bproducts\x1a\x1bgoogle/protobuf/empty.proto\x1a\fdomain.proto2\xc0\x16\n" +
 	"\bProducts\x127\n" +
 	"\x0fGetDictionaries\x12\f.products.Id\x1a\x16.products.Dictionaries\x12@\n" +
 	"\x0eSearchProducts\x12\x17.products.ProductSearch\x1a\x15.products.ProductList\x12<\n" +
@@ -66,7 +66,13 @@ const file_products_proto_rawDesc = "" +
 	"\vUpdateSlide\x12\x0f.products.Slide\x1a\x16.google.protobuf.Empty\x123\n" +
 	"\vDeleteSlide\x12\f.products.Id\x1a\x16.google.protobuf.Empty\x12;\n" +
 	"\fGetAllSlides\x12\x16.google.protobuf.Empty\x1a\x13.products.SlideList\x12)\n" +
-	"\bGetSlide\x12\f.products.Id\x1a\x0f.products.Slide\x12P\n" +
+	"\bGetSlide\x12\f.products.Id\x1a\x0f.products.Slide\x12:\n" +
+	"\rCreateArticle\x12\x11.products.Article\x1a\x16.google.protobuf.Empty\x12:\n" +
+	"\rUpdateArticle\x12\x11.products.Article\x1a\x16.google.protobuf.Empty\x125\n" +
+	"\rDeleteArticle\x12\f.products.Id\x1a\x16.google.protobuf.Empty\x12?\n" +
+	"\x0eGetAllArticles\x12\x16.google.protobuf.Empty\x1a\x15.products.ArticleList\x12-\n" +
+	"\n" +
+	"GetArticle\x12\f.products.Id\x1a\x11.products.Article\x12P\n" +
 	"\x18CreateProductColorPhotos\x12\x1c.products.ProductColorPhotos\x1a\x16.google.protobuf.Empty\x12P\n" +
 	"\x18UpdateProductColorPhotos\x12\x1c.products.ProductColorPhotos\x1a\x16.google.protobuf.Empty\x12R\n" +
 	"\x18DeleteProductColorPhotos\x12\x1e.products.ProductColorPhotosId\x1a\x16.google.protobuf.Empty\x12T\n" +
@@ -86,19 +92,21 @@ var file_products_proto_goTypes = []any{
 	(*Material)(nil),               // 9: products.Material
 	(*Color)(nil),                  // 10: products.Color
 	(*Slide)(nil),                  // 11: products.Slide
-	(*ProductColorPhotos)(nil),     // 12: products.ProductColorPhotos
-	(*ProductColorPhotosId)(nil),   // 13: products.ProductColorPhotosId
-	(*Dictionaries)(nil),           // 14: products.Dictionaries
-	(*ProductList)(nil),            // 15: products.ProductList
-	(*Product)(nil),                // 16: products.Product
-	(*BrandList)(nil),              // 17: products.BrandList
-	(*CategoryList)(nil),           // 18: products.CategoryList
-	(*CountryList)(nil),            // 19: products.CountryList
-	(*MaterialList)(nil),           // 20: products.MaterialList
-	(*ColorList)(nil),              // 21: products.ColorList
-	(*SlideList)(nil),              // 22: products.SlideList
-	(*ProductColorPhotosList)(nil), // 23: products.ProductColorPhotosList
-	(*PhotoList)(nil),              // 24: products.PhotoList
+	(*Article)(nil),                // 12: products.Article
+	(*ProductColorPhotos)(nil),     // 13: products.ProductColorPhotos
+	(*ProductColorPhotosId)(nil),   // 14: products.ProductColorPhotosId
+	(*Dictionaries)(nil),           // 15: products.Dictionaries
+	(*ProductList)(nil),            // 16: products.ProductList
+	(*Product)(nil),                // 17: products.Product
+	(*BrandList)(nil),              // 18: products.BrandList
+	(*CategoryList)(nil),           // 19: products.CategoryList
+	(*CountryList)(nil),            // 20: products.CountryList
+	(*MaterialList)(nil),           // 21: products.MaterialList
+	(*ColorList)(nil),              // 22: products.ColorList
+	(*SlideList)(nil),              // 23: products.SlideList
+	(*ArticleList)(nil),            // 24: products.ArticleList
+	(*ProductColorPhotosList)(nil), // 25: products.ProductColorPhotosList
+	(*PhotoList)(nil),              // 26: products.PhotoList
 }
 var file_products_proto_depIdxs = []int32{
 	0,  // 0: products.Products.GetDictionaries:input_type -> products.Id
@@ -139,56 +147,66 @@ var file_products_proto_depIdxs = []int32{
 	0,  // 35: products.Products.DeleteSlide:input_type -> products.Id
 	6,  // 36: products.Products.GetAllSlides:input_type -> google.protobuf.Empty
 	0,  // 37: products.Products.GetSlide:input_type -> products.Id
-	12, // 38: products.Products.CreateProductColorPhotos:input_type -> products.ProductColorPhotos
-	12, // 39: products.Products.UpdateProductColorPhotos:input_type -> products.ProductColorPhotos
-	13, // 40: products.Products.DeleteProductColorPhotos:input_type -> products.ProductColorPhotosId
-	6,  // 41: products.Products.GetAllProductColorPhotos:input_type -> google.protobuf.Empty
-	13, // 42: products.Products.GetPhotosByProductAndColor:input_type -> products.ProductColorPhotosId
-	14, // 43: products.Products.GetDictionaries:output_type -> products.Dictionaries
-	15, // 44: products.Products.SearchProducts:output_type -> products.ProductList
-	6,  // 45: products.Products.CreateProduct:output_type -> google.protobuf.Empty
-	6,  // 46: products.Products.UpdateProduct:output_type -> google.protobuf.Empty
-	6,  // 47: products.Products.DeleteProduct:output_type -> google.protobuf.Empty
-	15, // 48: products.Products.GetAllProducts:output_type -> products.ProductList
-	16, // 49: products.Products.GetProduct:output_type -> products.Product
-	15, // 50: products.Products.FilterProducts:output_type -> products.ProductList
-	6,  // 51: products.Products.CreateBrand:output_type -> google.protobuf.Empty
-	6,  // 52: products.Products.UpdateBrand:output_type -> google.protobuf.Empty
-	6,  // 53: products.Products.DeleteBrand:output_type -> google.protobuf.Empty
-	17, // 54: products.Products.GetAllBrands:output_type -> products.BrandList
-	5,  // 55: products.Products.GetBrand:output_type -> products.Brand
-	6,  // 56: products.Products.CreateCategory:output_type -> google.protobuf.Empty
-	6,  // 57: products.Products.UpdateCategory:output_type -> google.protobuf.Empty
-	6,  // 58: products.Products.DeleteCategory:output_type -> google.protobuf.Empty
-	18, // 59: products.Products.GetAllCategories:output_type -> products.CategoryList
-	7,  // 60: products.Products.GetCategory:output_type -> products.Category
-	6,  // 61: products.Products.CreateCountry:output_type -> google.protobuf.Empty
-	6,  // 62: products.Products.UpdateCountry:output_type -> google.protobuf.Empty
-	6,  // 63: products.Products.DeleteCountry:output_type -> google.protobuf.Empty
-	19, // 64: products.Products.GetAllCountries:output_type -> products.CountryList
-	8,  // 65: products.Products.GetCountry:output_type -> products.Country
-	6,  // 66: products.Products.CreateMaterial:output_type -> google.protobuf.Empty
-	6,  // 67: products.Products.UpdateMaterial:output_type -> google.protobuf.Empty
-	6,  // 68: products.Products.DeleteMaterial:output_type -> google.protobuf.Empty
-	20, // 69: products.Products.GetAllMaterials:output_type -> products.MaterialList
-	9,  // 70: products.Products.GetMaterial:output_type -> products.Material
-	6,  // 71: products.Products.CreateColor:output_type -> google.protobuf.Empty
-	6,  // 72: products.Products.UpdateColor:output_type -> google.protobuf.Empty
-	6,  // 73: products.Products.DeleteColor:output_type -> google.protobuf.Empty
-	21, // 74: products.Products.GetAllColors:output_type -> products.ColorList
-	10, // 75: products.Products.GetColor:output_type -> products.Color
-	6,  // 76: products.Products.CreateSlide:output_type -> google.protobuf.Empty
-	6,  // 77: products.Products.UpdateSlide:output_type -> google.protobuf.Empty
-	6,  // 78: products.Products.DeleteSlide:output_type -> google.protobuf.Empty
-	22, // 79: products.Products.GetAllSlides:output_type -> products.SlideList
-	11, // 80: products.Products.GetSlide:output_type -> products.Slide
-	6,  // 81: products.Products.CreateProductColorPhotos:output_type -> google.protobuf.Empty
-	6,  // 82: products.Products.UpdateProductColorPhotos:output_type -> google.protobuf.Empty
-	6,  // 83: products.Products.DeleteProductColorPhotos:output_type -> google.protobuf.Empty
-	23, // 84: products.Products.GetAllProductColorPhotos:output_type -> products.ProductColorPhotosList
-	24, // 85: products.Products.GetPhotosByProductAndColor:output_type -> products.PhotoList
-	43, // [43:86] is the sub-list for method output_type
-	0,  // [0:43] is the sub-list for method input_type
+	12, // 38: products.Products.CreateArticle:input_type -> products.Article
+	12, // 39: products.Products.UpdateArticle:input_type -> products.Article
+	0,  // 40: products.Products.DeleteArticle:input_type -> products.Id
+	6,  // 41: products.Products.GetAllArticles:input_type -> google.protobuf.Empty
+	0,  // 42: products.Products.GetArticle:input_type -> products.Id
+	13, // 43: products.Products.CreateProductColorPhotos:input_type -> products.ProductColorPhotos
+	13, // 44: products.Products.UpdateProductColorPhotos:input_type -> products.ProductColorPhotos
+	14, // 45: products.Products.DeleteProductColorPhotos:input_type -> products.ProductColorPhotosId
+	6,  // 46: products.Products.GetAllProductColorPhotos:input_type -> google.protobuf.Empty
+	14, // 47: products.Products.GetPhotosByProductAndColor:input_type -> products.ProductColorPhotosId
+	15, // 48: products.Products.GetDictionaries:output_type -> products.Dictionaries
+	16, // 49: products.Products.SearchProducts:output_type -> products.ProductList
+	6,  // 50: products.Products.CreateProduct:output_type -> google.protobuf.Empty
+	6,  // 51: products.Products.UpdateProduct:output_type -> google.protobuf.Empty
+	6,  // 52: products.Products.DeleteProduct:output_type -> google.protobuf.Empty
+	16, // 53: products.Products.GetAllProducts:output_type -> products.ProductList
+	17, // 54: products.Products.GetProduct:output_type -> products.Product
+	16, // 55: products.Products.FilterProducts:output_type -> products.ProductList
+	6,  // 56: products.Products.CreateBrand:output_type -> google.protobuf.Empty
+	6,  // 57: products.Products.UpdateBrand:output_type -> google.protobuf.Empty
+	6,  // 58: products.Products.DeleteBrand:output_type -> google.protobuf.Empty
+	18, // 59: products.Products.GetAllBrands:output_type -> products.BrandList
+	5,  // 60: products.Products.GetBrand:output_type -> products.Brand
+	6,  // 61: products.Products.CreateCategory:output_type -> google.protobuf.Empty
+	6,  // 62: products.Products.UpdateCategory:output_type -> google.protobuf.Empty
+	6,  // 63: products.Products.DeleteCategory:output_type -> google.protobuf.Empty
+	19, // 64: products.Products.GetAllCategories:output_type -> products.CategoryList
+	7,  // 65: products.Products.GetCategory:output_type -> products.Category
+	6,  // 66: products.Products.CreateCountry:output_type -> google.protobuf.Empty
+	6,  // 67: products.Products.UpdateCountry:output_type -> google.protobuf.Empty
+	6,  // 68: products.Products.DeleteCountry:output_type -> google.protobuf.Empty
+	20, // 69: products.Products.GetAllCountries:output_type -> products.CountryList
+	8,  // 70: products.Products.GetCountry:output_type -> products.Country
+	6,  // 71: products.Products.CreateMaterial:output_type -> google.protobuf.Empty
+	6,  // 72: products.Products.UpdateMaterial:output_type -> google.protobuf.Empty
+	6,  // 73: products.Products.DeleteMaterial:output_type -> google.protobuf.Empty
+	21, // 74: products.Products.GetAllMaterials:output_type -> products.MaterialList
+	9,  // 75: products.Products.GetMaterial:output_type -> products.Material
+	6,  // 76: products.Products.CreateColor:output_type -> google.protobuf.Empty
+	6,  // 77: products.Products.UpdateColor:output_type -> google.protobuf.Empty
+	6,  // 78: products.Products.DeleteColor:output_type -> google.protobuf.Empty
+	22, // 79: products.Products.GetAllColors:output_type -> products.ColorList
+	10, // 80: products.Products.GetColor:output_type -> products.Color
+	6,  // 81: products.Products.CreateSlide:output_type -> google.protobuf.Empty
+	6,  // 82: products.Products.UpdateSlide:output_type -> google.protobuf.Empty
+	6,  // 83: products.Products.DeleteSlide:output_type -> google.protobuf.Empty
+	23, // 84: products.Products.GetAllSlides:output_type -> products.SlideList
+	11, // 85: products.Products.GetSlide:output_type -> products.Slide
+	6,  // 86: products.Products.CreateArticle:output_type -> google.protobuf.Empty
+	6,  // 87: products.Products.UpdateArticle:output_type -> google.protobuf.Empty
+	6,  // 88: products.Products.DeleteArticle:output_type -> google.protobuf.Empty
+	24, // 89: products.Products.GetAllArticles:output_type -> products.ArticleList
+	12, // 90: products.Products.GetArticle:output_type -> products.Article
+	6,  // 91: products.Products.CreateProductColorPhotos:output_type -> google.protobuf.Empty
+	6,  // 92: products.Products.UpdateProductColorPhotos:output_type -> google.protobuf.Empty
+	6,  // 93: products.Products.DeleteProductColorPhotos:output_type -> google.protobuf.Empty
+	25, // 94: products.Products.GetAllProductColorPhotos:output_type -> products.ProductColorPhotosList
+	26, // 95: products.Products.GetPhotosByProductAndColor:output_type -> products.PhotoList
+	48, // [48:96] is the sub-list for method output_type
+	0,  // [0:48] is the sub-list for method input_type
 	0,  // [0:0] is the sub-list for extension type_name
 	0,  // [0:0] is the sub-list for extension extendee
 	0,  // [0:0] is the sub-list for field type_name

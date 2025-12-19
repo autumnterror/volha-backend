@@ -3,21 +3,22 @@ package domain
 import productsRPC "github.com/autumnterror/volha-backend/api/proto/gen"
 
 type Product struct {
-	Id          string      `protobuf:"bytes,1,opt,name=id" json:"id,omitempty"`
-	Title       string      `protobuf:"bytes,2,opt,name=title" json:"title,omitempty"`
-	Article     string      `protobuf:"bytes,3,opt,name=article" json:"article,omitempty"`
-	Brand       *Brand      `protobuf:"bytes,4,opt,name=brand" json:"brand,omitempty"`
-	Category    *Category   `protobuf:"bytes,5,opt,name=category" json:"category,omitempty"`
-	Country     *Country    `protobuf:"bytes,6,opt,name=country" json:"country,omitempty"`
-	Width       int32       `protobuf:"varint,7,opt,name=width" json:"width,omitempty"`
-	Height      int32       `protobuf:"varint,8,opt,name=height" json:"height,omitempty"`
-	Depth       int32       `protobuf:"varint,9,opt,name=depth" json:"depth,omitempty"`
-	Materials   []*Material `protobuf:"bytes,10,rep,name=materials" json:"materials,omitempty"`
-	Colors      []*Color    `protobuf:"bytes,11,rep,name=colors" json:"colors,omitempty"`
-	Photos      []string    `protobuf:"bytes,12,rep,name=photos" json:"photos,omitempty"`
-	Seems       []*Product  `protobuf:"bytes,13,rep,name=seems" json:"seems,omitempty"`
-	Price       int32       `protobuf:"varint,14,opt,name=price" json:"price,omitempty"`
-	Description string      `protobuf:"bytes,15,opt,name=description" json:"description,omitempty"`
+	Id          string      `json:"id"`
+	Title       string      `json:"title"`
+	Article     string      `json:"article"`
+	Brand       *Brand      `json:"brand"`
+	Category    *Category   `json:"category"`
+	Country     *Country    `json:"country"`
+	Width       int32       `json:"width"`
+	Height      int32       `json:"height"`
+	Depth       int32       `json:"depth"`
+	Materials   []*Material `json:"materials"`
+	Colors      []*Color    `json:"colors"`
+	Photos      []string    `json:"photos"`
+	Seems       []*Product  `json:"seems"`
+	Price       int32       `json:"price"`
+	Description string      `json:"description"`
+	Views       int32       `json:"views"`
 }
 
 type ProductId struct {
@@ -36,36 +37,40 @@ type ProductId struct {
 	Seems       []string `json:"seems"`
 	Price       int32    `json:"price"`
 	Description string   `json:"description"`
+	Views       int32    `json:"views"`
 }
 
-var EmptyProduct = Product{
-	Id:      "",
-	Title:   "",
-	Article: "",
-	Brand: &Brand{
-		Id:    "",
-		Title: "",
-	},
-	Category: &Category{
-		Id:    "",
-		Title: "",
-		Uri:   "",
-		Img:   "",
-	},
-	Country: &Country{
-		Id:       "",
-		Title:    "",
-		Friendly: "",
-	},
-	Width:       0,
-	Height:      0,
-	Depth:       0,
-	Materials:   []*Material{},
-	Colors:      []*Color{},
-	Photos:      []string{},
-	Seems:       []*Product{},
-	Price:       0,
-	Description: "",
+func NewEmptyProduct() Product {
+	return Product{
+		Id:      "",
+		Title:   "",
+		Article: "",
+		Brand: &Brand{
+			Id:    "",
+			Title: "",
+		},
+		Category: &Category{
+			Id:    "",
+			Title: "",
+			Uri:   "",
+			Img:   "",
+		},
+		Country: &Country{
+			Id:       "",
+			Title:    "",
+			Friendly: "",
+		},
+		Width:       0,
+		Height:      0,
+		Depth:       0,
+		Materials:   []*Material{},
+		Colors:      []*Color{},
+		Photos:      []string{},
+		Seems:       []*Product{},
+		Price:       0,
+		Description: "",
+		Views:       0,
+	}
 }
 
 type ProductFilter struct {
@@ -136,6 +141,7 @@ func ProductFromRpc(p *productsRPC.Product) *Product {
 		Seems:       seems,
 		Price:       p.GetPrice(),
 		Description: p.GetDescription(),
+		Views:       p.GetViews(),
 	}
 }
 
@@ -181,6 +187,7 @@ func ProductToRpc(p *Product) *productsRPC.Product {
 		Seems:       seems,
 		Price:       p.Price,
 		Description: p.Description,
+		Views:       p.Views,
 	}
 }
 
@@ -224,6 +231,7 @@ func ProductIdFromRpc(p *productsRPC.ProductId) *ProductId {
 		Seems:       append([]string{}, p.GetSeems()...),
 		Price:       p.GetPrice(),
 		Description: p.GetDescription(),
+		Views:       p.Views,
 	}
 }
 
@@ -247,6 +255,7 @@ func ProductIdToRpc(p *ProductId) *productsRPC.ProductId {
 		Seems:       append([]string{}, p.Seems...),
 		Price:       p.Price,
 		Description: p.Description,
+		Views:       p.Views,
 	}
 }
 

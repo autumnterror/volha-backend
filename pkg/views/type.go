@@ -11,6 +11,7 @@ const (
 	ProductColorPhotos
 	Slide
 	Product
+	Article
 )
 
 func (t Type) String() string {
@@ -31,6 +32,8 @@ func (t Type) String() string {
 		return "Slide"
 	case Product:
 		return "Product"
+	case Article:
+		return "Article"
 	default:
 		return "Unknown"
 	}

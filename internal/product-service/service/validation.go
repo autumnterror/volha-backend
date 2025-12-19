@@ -20,7 +20,7 @@ func validateID(id string) error {
 
 func validateBasicType(_type views.Type) error {
 	switch _type {
-	case views.Brand, views.Category, views.Color, views.Material, views.Country, views.Slide:
+	case views.Brand, views.Category, views.Color, views.Material, views.Country, views.Slide, views.Article:
 		return nil
 	default:
 		return domain.ErrUnknownType
@@ -31,7 +31,6 @@ func validateBasicPayload(obj any, _type views.Type) error {
 	if obj == nil {
 		return errors.New("object is nil")
 	}
-
 	switch _type {
 	case views.Brand:
 		b, ok := obj.(*domain.Brand)
@@ -110,6 +109,20 @@ func validateBasicPayload(obj any, _type views.Type) error {
 		}
 		if sl.Img762 == "" {
 			return errors.New("slide img762 is empty")
+		}
+	case views.Article:
+		sl, ok := obj.(*domain.Article)
+		if !ok {
+			return domain.ErrInvalidType
+		}
+		if err := validateID(sl.Id); err != nil {
+			return err
+		}
+		if sl.Title == "" {
+			return errors.New("article title is empty")
+		}
+		if sl.Img == "" {
+			return errors.New("article img is empty")
 		}
 	default:
 		return domain.ErrUnknownType

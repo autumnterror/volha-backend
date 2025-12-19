@@ -2,7 +2,6 @@ package repository
 
 import (
 	"context"
-	"github.com/autumnterror/volha-backend/internal/product-service/infra/psql"
 	"github.com/autumnterror/volha-backend/pkg/views"
 	"testing"
 
@@ -19,7 +18,7 @@ func TestGoodSimpleTables(t *testing.T) {
 	t.Run("brands", func(t *testing.T) {
 		t.Parallel()
 
-		db, err := psql.NewConnect(config.Test())
+		db, err := NewConnect(config.Test())
 		assert.NoError(t, err)
 
 		tx, err := db.Driver.Begin()
@@ -52,7 +51,7 @@ func TestGoodSimpleTables(t *testing.T) {
 	t.Run("categories", func(t *testing.T) {
 		t.Parallel()
 
-		db, err := psql.NewConnect(config.Test())
+		db, err := NewConnect(config.Test())
 		assert.NoError(t, err)
 
 		tx, err := db.Driver.Begin()
@@ -86,7 +85,7 @@ func TestGoodSimpleTables(t *testing.T) {
 	t.Run("countries", func(t *testing.T) {
 		t.Parallel()
 
-		db, err := psql.NewConnect(config.Test())
+		db, err := NewConnect(config.Test())
 		assert.NoError(t, err)
 
 		tx, err := db.Driver.Begin()
@@ -120,7 +119,7 @@ func TestGoodSimpleTables(t *testing.T) {
 	t.Run("materials", func(t *testing.T) {
 		t.Parallel()
 
-		db, err := psql.NewConnect(config.Test())
+		db, err := NewConnect(config.Test())
 		assert.NoError(t, err)
 
 		tx, err := db.Driver.Begin()
@@ -151,7 +150,7 @@ func TestGoodSimpleTables(t *testing.T) {
 	t.Run("colors", func(t *testing.T) {
 		t.Parallel()
 
-		db, err := psql.NewConnect(config.Test())
+		db, err := NewConnect(config.Test())
 		assert.NoError(t, err)
 
 		tx, err := db.Driver.Begin()
@@ -181,10 +180,11 @@ func TestGoodSimpleTables(t *testing.T) {
 
 		assert.NoError(t, driver.Delete(ctx, c.Id, views.Color))
 	})
+
 	t.Run("slide", func(t *testing.T) {
 		t.Parallel()
 
-		db, err := psql.NewConnect(config.Test())
+		db, err := NewConnect(config.Test())
 		assert.NoError(t, err)
 
 		tx, err := db.Driver.Begin()
@@ -214,6 +214,40 @@ func TestGoodSimpleTables(t *testing.T) {
 
 		assert.NoError(t, driver.Delete(ctx, s.Id, views.Slide))
 	})
+
+	t.Run("article", func(t *testing.T) {
+		t.Parallel()
+
+		db, err := NewConnect(config.Test())
+		assert.NoError(t, err)
+
+		tx, err := db.Driver.Begin()
+		assert.NoError(t, err)
+
+		driver := Driver{Driver: tx}
+
+		t.Cleanup(func() {
+			_ = tx.Rollback()
+			db.Disconnect()
+		})
+
+		s := &domain.Article{Id: "article test", Title: "Title", Img: "img.jpg", Text: "# zagolovok"}
+		updated := &domain.Article{Id: "article test", Title: "newTitle", Img: "newimg.jpg", Text: "# newzagolovok"}
+
+		assert.NoError(t, driver.Create(ctx, s, views.Article))
+
+		all, err := driver.GetAll(ctx, views.Article)
+		assert.NoError(t, err)
+		log.Println("Articles after create:", all)
+
+		assert.NoError(t, driver.Update(ctx, updated, views.Article))
+
+		all, err = driver.Get(ctx, s.Id, views.Article)
+		assert.NoError(t, err)
+		log.Println("Articles after update:", all)
+
+		assert.NoError(t, driver.Delete(ctx, s.Id, views.Article))
+	})
 }
 
 func TestBadSimpleTables(t *testing.T) {
@@ -222,7 +256,7 @@ func TestBadSimpleTables(t *testing.T) {
 	t.Run("brands bad", func(t *testing.T) {
 		t.Parallel()
 
-		db, err := psql.NewConnect(config.Test())
+		db, err := NewConnect(config.Test())
 		assert.NoError(t, err)
 
 		tx, err := db.Driver.Begin()
@@ -263,7 +297,7 @@ func TestBadSimpleTables(t *testing.T) {
 	t.Run("categories bad", func(t *testing.T) {
 		t.Parallel()
 
-		db, err := psql.NewConnect(config.Test())
+		db, err := NewConnect(config.Test())
 		assert.NoError(t, err)
 
 		tx, err := db.Driver.Begin()
@@ -305,7 +339,7 @@ func TestBadSimpleTables(t *testing.T) {
 	t.Run("countries bad", func(t *testing.T) {
 		t.Parallel()
 
-		db, err := psql.NewConnect(config.Test())
+		db, err := NewConnect(config.Test())
 		assert.NoError(t, err)
 
 		tx, err := db.Driver.Begin()
@@ -347,7 +381,7 @@ func TestBadSimpleTables(t *testing.T) {
 	t.Run("materials bad", func(t *testing.T) {
 		t.Parallel()
 
-		db, err := psql.NewConnect(config.Test())
+		db, err := NewConnect(config.Test())
 		assert.NoError(t, err)
 
 		tx, err := db.Driver.Begin()
@@ -388,7 +422,7 @@ func TestBadSimpleTables(t *testing.T) {
 	t.Run("colors bad", func(t *testing.T) {
 		t.Parallel()
 
-		db, err := psql.NewConnect(config.Test())
+		db, err := NewConnect(config.Test())
 		assert.NoError(t, err)
 
 		tx, err := db.Driver.Begin()
@@ -425,10 +459,11 @@ func TestBadSimpleTables(t *testing.T) {
 
 		assert.ErrorIs(t, driver.Delete(ctx, color.Id, views.Color), domain.ErrNotFound)
 	})
+
 	t.Run("slides bad", func(t *testing.T) {
 		t.Parallel()
 
-		db, err := psql.NewConnect(config.Test())
+		db, err := NewConnect(config.Test())
 		assert.NoError(t, err)
 
 		tx, err := db.Driver.Begin()
@@ -465,43 +500,45 @@ func TestBadSimpleTables(t *testing.T) {
 
 		assert.ErrorIs(t, driver.Delete(ctx, s.Id, views.Slide), domain.ErrNotFound)
 	})
-	// t.Run("product color photos bad", func(t *testing.T) {
-	// 	t.Parallel()
 
-	// 	db, err := NewConnect(config.Test())
-	// 	assert.NoError(t, err)
+	t.Run("articles bad", func(t *testing.T) {
+		t.Parallel()
 
-	// 	tx, err := db.Driver.Begin()
-	// 	assert.NoError(t, err)
+		db, err := NewConnect(config.Test())
+		assert.NoError(t, err)
 
-	// 	driver := Driver{Driver: tx}
-	// 	defer t.Cleanup(func() {
-	// 		_ = tx.Rollback()
-	// 		db.Disconnect()
-	// 	})
+		tx, err := db.Driver.Begin()
+		assert.NoError(t, err)
 
-	// 	assert.ErrorIs(t, driver.Create(ctx, 2, domain.ProductColorPhotos), domain.ErrInvalidType)
-	// 	assert.ErrorIs(t, driver.Create(ctx, 2, 19), domain.ErrUnknownType)
+		driver := Driver{Driver: tx}
+		defer t.Cleanup(func() {
+			_ = tx.Rollback()
+			db.Disconnect()
+		})
 
-	// 	pcp := &domain.ProductColorPhotos{ProductId: "product_test_bad", ColorId: "color_test_bad", Photos: []string{"photo1", "photo2"}}
-	// 	tx1, err := db.Driver.Begin()
-	// 	assert.NoError(t, err)
-	// 	{
-	// 		driver := Driver{Driver: tx1}
-	// 		assert.ErrorIs(t, driver.Create(ctx, pcp, domain.ProductColorPhotos), domain.ErrForeignKey)
-	// 	}
-	// 	_ = tx1.Rollback()
+		assert.ErrorIs(t, driver.Create(ctx, 2, views.Article), domain.ErrInvalidType)
+		assert.ErrorIs(t, driver.Create(ctx, 2, 19), domain.ErrUnknownType)
 
-	// 	assert.ErrorIs(
-	// 		t,
-	// 		driver.Update(
-	// 			ctx,
-	// 			&domain.ProductColorPhotos{ProductId: "not exist", ColorId: "not exist", Photos: []string{"photo1", "photo2"}},
-	// 			domain.ProductColorPhotos,
-	// 		),
-	// 		domain.ErrNotFound,
-	// 	)
+		s := &domain.Article{Id: "article test", Title: "Title", Img: "img.jpg", Text: "# zagolovok"}
+		tx1, err := db.Driver.Begin()
+		assert.NoError(t, err)
+		{
+			driver := Driver{Driver: tx1}
+			assert.NoError(t, driver.Create(ctx, s, views.Article))
+			assert.ErrorIs(t, driver.Create(ctx, s, views.Article), domain.ErrAlreadyExists)
+		}
+		_ = tx1.Rollback()
 
-	// 	assert.ErrorIs(t, driver.DeleteProductColorPhotos(ctx, pcp.ProductId, pcp.ColorId), domain.ErrNotFound)
-	// })
+		assert.ErrorIs(
+			t,
+			driver.Update(
+				ctx,
+				&domain.Article{Id: "notexist"},
+				views.Article,
+			),
+			domain.ErrNotFound,
+		)
+
+		assert.ErrorIs(t, driver.Delete(ctx, s.Id, views.Article), domain.ErrNotFound)
+	})
 }

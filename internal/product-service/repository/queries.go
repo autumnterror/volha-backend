@@ -11,7 +11,7 @@ SELECT
     p.photos,
     p.price,
     p.description,
-
+	p.views,
     b.id      AS brand_id,
     b.title   AS brand_title,
 
@@ -94,7 +94,8 @@ const getProductQuery = `
 		p.photos,
 		p.price,
 		p.description,
-	
+		p.views,
+
 		b.id      AS brand_id,
 		b.title   AS brand_title,
 	
@@ -170,21 +171,21 @@ const createProductQuery = `
 			ins_product AS (
 				INSERT INTO products (
 					id, title, article, brand_id, category_id, country_id,
-					width, height, depth, photos, price, description
+					width, height, depth, photos, price, description, views
 				)
-				VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12)
+				VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13)
 			),
 			ins_materials AS (
 				INSERT INTO product_materials (product_id, material_id)
-				SELECT $1, unnest($13::varchar[])
+				SELECT $1, unnest($14::varchar[])
 			),
 			ins_colors AS (
 				INSERT INTO product_colors (product_id, color_id)
-				SELECT $1, unnest($14::varchar[])
+				SELECT $1, unnest($15::varchar[])
 			),
 			ins_seems AS (
 				INSERT INTO product_seems (product_id, similar_product_id)
-				SELECT $1, unnest($15::varchar[])
+				SELECT $1, unnest($16::varchar[])
 			)
 		SELECT 1;
 	`
@@ -202,7 +203,8 @@ const updateProductQuery = `
 					depth       = $9,
 					photos      = $10,
 					price       = $11,
-					description = $12
+					description = $12,
+					views 	    = $13
 				WHERE id = $1
 			),
 		
@@ -210,39 +212,39 @@ const updateProductQuery = `
 			ins_materials AS (
 				INSERT INTO product_materials (product_id, material_id)
 				SELECT $1, m_id
-				FROM unnest($13::varchar[]) AS t(m_id)
+				FROM unnest($14::varchar[]) AS t(m_id)
 				ON CONFLICT (product_id, material_id) DO NOTHING
 			),
 			del_materials AS (
 				DELETE FROM product_materials pm
 				WHERE pm.product_id = $1
-				  AND NOT (pm.material_id = ANY($13::varchar[]))
+				  AND NOT (pm.material_id = ANY($14::varchar[]))
 			),
 		
 			-- colors
 			ins_colors AS (
 				INSERT INTO product_colors (product_id, color_id)
 				SELECT $1, c_id
-				FROM unnest($14::varchar[]) AS t(c_id)
+				FROM unnest($15::varchar[]) AS t(c_id)
 				ON CONFLICT (product_id, color_id) DO NOTHING
 			),
 			del_colors AS (
 				DELETE FROM product_colors pc
 				WHERE pc.product_id = $1
-				  AND NOT (pc.color_id = ANY($14::varchar[]))
+				  AND NOT (pc.color_id = ANY($15::varchar[]))
 			),
 		
 			-- seems
 			ins_seems AS (
 				INSERT INTO product_seems (product_id, similar_product_id)
 				SELECT $1, s_id
-				FROM unnest($15::varchar[]) AS t(s_id)
+				FROM unnest($16::varchar[]) AS t(s_id)
 				ON CONFLICT (product_id, similar_product_id) DO NOTHING
 			),
 			del_seems AS (
 				DELETE FROM product_seems ps
 				WHERE ps.product_id = $1
-				  AND NOT (ps.similar_product_id = ANY($15::varchar[]))
+				  AND NOT (ps.similar_product_id = ANY($16::varchar[]))
 			)
 		SELECT 1;
 

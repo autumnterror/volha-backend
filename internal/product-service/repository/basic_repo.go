@@ -48,6 +48,9 @@ func (d Driver) GetAll(ctx context.Context, _type views.Type) (any, error) {
 	case views.Slide:
 		scanner = &slideScanner{}
 		query = `SELECT id, link, img, img762 FROM slides`
+	case views.Article:
+		scanner = &articleScanner{}
+		query = `SELECT id, title, img, text FROM articles`
 	default:
 		return nil, format.Error(op, domain.ErrUnknownType)
 	}
@@ -96,6 +99,9 @@ func (d Driver) Get(
 	case views.Slide:
 		scanner = &slideScannerRow{}
 		query = `SELECT id, link, img, img762 FROM slides WHERE id = $1`
+	case views.Article:
+		scanner = &articleScannerRow{}
+		query = `SELECT id, title, img, text FROM articles WHERE id = $1`
 	default:
 		return nil, format.Error(op, domain.ErrUnknownType)
 	}
@@ -172,7 +178,16 @@ func (d Driver) Create(
 		args = append(args, b.Link)
 		args = append(args, b.Img)
 		args = append(args, b.Img762)
-
+	case views.Article:
+		b, ok := obj.(*domain.Article)
+		if !ok {
+			return format.Error(op, domain.ErrInvalidType)
+		}
+		query = `INSERT INTO articles (id, title, img, text) VALUES ($1, $2, $3, $4)`
+		args = append(args, b.Id)
+		args = append(args, b.Title)
+		args = append(args, b.Img)
+		args = append(args, b.Text)
 	default:
 		return format.Error(op, domain.ErrUnknownType)
 	}
@@ -259,6 +274,16 @@ func (d Driver) Update(
 		args = append(args, b.Link)
 		args = append(args, b.Img)
 		args = append(args, b.Img762)
+	case views.Article:
+		b, ok := obj.(*domain.Article)
+		if !ok {
+			return format.Error(op, domain.ErrInvalidType)
+		}
+		query = `UPDATE articles SET title = $2, img = $3, text = $4 WHERE id = $1`
+		args = append(args, b.Id)
+		args = append(args, b.Title)
+		args = append(args, b.Img)
+		args = append(args, b.Text)
 	default:
 		return format.Error(op, domain.ErrUnknownType)
 	}
@@ -299,6 +324,8 @@ func (d Driver) Delete(
 		query = `DELETE FROM colors WHERE id = $1`
 	case views.Slide:
 		query = `DELETE FROM slides WHERE id = $1`
+	case views.Article:
+		query = `DELETE FROM articles WHERE id = $1`
 	default:
 		return format.Error(op, domain.ErrUnknownType)
 	}

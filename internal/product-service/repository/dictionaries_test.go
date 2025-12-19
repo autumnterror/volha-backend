@@ -2,7 +2,6 @@ package repository
 
 import (
 	"context"
-	"github.com/autumnterror/volha-backend/internal/product-service/infra/psql"
 	"github.com/autumnterror/volha-backend/pkg/views"
 
 	"github.com/autumnterror/breezynotes/pkg/log"
@@ -16,7 +15,7 @@ import (
 )
 
 func TestGetDictionaries(t *testing.T) {
-	db, err := psql.NewConnect(config.Test())
+	db, err := NewConnect(config.Test())
 	assert.NoError(t, err)
 
 	ctx := context.Background()
