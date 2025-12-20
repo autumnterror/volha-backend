@@ -1673,6 +1673,48 @@ const docTemplate = `{
                 }
             }
         },
+        "/api/message": {
+            "post": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "message"
+                ],
+                "summary": "Отправить сообщение",
+                "parameters": [
+                    {
+                        "description": "Новый цвет",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/views.Email"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Цвет успешно создан",
+                        "schema": {
+                            "$ref": "#/definitions/views.SWGFileUploadResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Неверный формат данных",
+                        "schema": {
+                            "$ref": "#/definitions/views.SWGError"
+                        }
+                    },
+                    "500": {
+                        "description": "Ошибка на сервере",
+                        "schema": {
+                            "$ref": "#/definitions/views.SWGError"
+                        }
+                    }
+                }
+            }
+        },
         "/api/product": {
             "get": {
                 "description": "Возвращает продукт по id",
@@ -2623,6 +2665,31 @@ const docTemplate = `{
                 },
                 "link": {
                     "type": "string"
+                }
+            }
+        },
+        "views.Email": {
+            "type": "object",
+            "properties": {
+                "html": {
+                    "type": "string",
+                    "example": "\u003cp\u003eThis is the HTML content\u003c/p\u003e"
+                },
+                "recipient_email": {
+                    "type": "string",
+                    "example": "example@example.com"
+                },
+                "recipient_name": {
+                    "type": "string",
+                    "example": "Ivan Ivanov"
+                },
+                "subject": {
+                    "type": "string",
+                    "example": "Ivan Ivanov"
+                },
+                "text": {
+                    "type": "string",
+                    "example": "This is the text content"
                 }
             }
         },

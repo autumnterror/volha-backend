@@ -175,6 +175,10 @@ func New(rds *redis.Client, a *products.Client, cfg *config.Config) *Echo {
 			art.PUT("", h.UpdateArticle)
 			art.DELETE("", h.DeleteArticle)
 		}
+		msg := adminApi.Group("/message")
+		{
+			msg.POST("", h.SendMessage)
+		}
 	}
 
 	return &Echo{

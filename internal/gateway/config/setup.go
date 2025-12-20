@@ -19,6 +19,7 @@ type Config struct {
 	RedisPw      string        `mapstructure:"redis_pw"`
 	RedisAddr    string        `mapstructure:"redis_addr"`
 	AdminPW      string        `mapstructure:"admin_pw"`
+	Email        string        `mapstructure:"email"`
 }
 
 // MustSetup return config and panic if error
@@ -33,6 +34,7 @@ func MustSetup() *Config {
 // setup create config structure
 func setup() (*Config, error) {
 	const op = "config.setup"
+
 	configPath := os.Getenv("CONFIG_PATH")
 	if configPath == "" {
 		configPath = "./local-config/blocknote.yaml"

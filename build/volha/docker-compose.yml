@@ -8,9 +8,9 @@ services:
       - POSTGRES_HOST=volha-productsdb
     volumes:
       - ./dumps:/dumps
-      -  .env:/app/.env
+      - .env:/app/.env
     restart: unless-stopped
-    
+
   volha-redis:
     container_name: volha-redis
     image: redis:latest

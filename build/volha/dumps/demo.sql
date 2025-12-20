@@ -34,7 +34,7 @@ INSERT INTO colors (id, title, hex) VALUES
 -- ========== products ==========
 INSERT INTO products (
   id, title, article, brand_id, category_id, country_id,
-  width, height, depth, photos, price, description
+  width, height, depth, photos, price, description, views, is_favorite
 ) VALUES
 (
   'd506a6nbne320j90g2s0',
@@ -46,7 +46,9 @@ INSERT INTO products (
   780, 920, 820,
   ARRAY['1.jpg','2.jpg','3.jpg'],
   25900,
-  'Мягкое кресло с выраженной поддержкой спины. Подходит для гостиной и кабинета.'
+  'Мягкое кресло с выраженной поддержкой спины. Подходит для гостиной и кабинета.',
+  1000,
+  false
 ),
 (
   'd506a6nbne320j90g2sg',
@@ -58,7 +60,9 @@ INSERT INTO products (
   1400, 760, 800,
   ARRAY['2.jpg','3.jpg','1.jpg'],
   39900,
-  'Обеденный стол на металлическом основании. Столешница из дуба, устойчивое покрытие.'
+  'Обеденный стол на металлическом основании. Столешница из дуба, устойчивое покрытие.',
+  500,
+  false
 ),
 (
   'd506a6nbne320j90g2t0',
@@ -70,7 +74,9 @@ INSERT INTO products (
   260, 380, 260,
   ARRAY['3.jpg','1.jpg','2.jpg'],
   12900,
-  'Подвесной светильник с мягким рассеиванием. Хорошо смотрится над столом или барной стойкой.'
+  'Подвесной светильник с мягким рассеиванием. Хорошо смотрится над столом или барной стойкой.',
+  5000,
+  true
 );
 
 -- ========== product_materials ==========
