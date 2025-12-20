@@ -161,29 +161,30 @@ func (x *Title) GetTitle() string {
 	return ""
 }
 
-type ProductSearch struct {
+type ProductSearchWithPagination struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
 	Title         string                 `protobuf:"bytes,2,opt,name=title,proto3" json:"title,omitempty"`
 	Article       string                 `protobuf:"bytes,3,opt,name=article,proto3" json:"article,omitempty"`
+	Pag           *Pagination            `protobuf:"bytes,4,opt,name=pag,proto3" json:"pag,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *ProductSearch) Reset() {
-	*x = ProductSearch{}
+func (x *ProductSearchWithPagination) Reset() {
+	*x = ProductSearchWithPagination{}
 	mi := &file_domain_proto_msgTypes[3]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *ProductSearch) String() string {
+func (x *ProductSearchWithPagination) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*ProductSearch) ProtoMessage() {}
+func (*ProductSearchWithPagination) ProtoMessage() {}
 
-func (x *ProductSearch) ProtoReflect() protoreflect.Message {
+func (x *ProductSearchWithPagination) ProtoReflect() protoreflect.Message {
 	mi := &file_domain_proto_msgTypes[3]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -195,35 +196,43 @@ func (x *ProductSearch) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use ProductSearch.ProtoReflect.Descriptor instead.
-func (*ProductSearch) Descriptor() ([]byte, []int) {
+// Deprecated: Use ProductSearchWithPagination.ProtoReflect.Descriptor instead.
+func (*ProductSearchWithPagination) Descriptor() ([]byte, []int) {
 	return file_domain_proto_rawDescGZIP(), []int{3}
 }
 
-func (x *ProductSearch) GetId() string {
+func (x *ProductSearchWithPagination) GetId() string {
 	if x != nil {
 		return x.Id
 	}
 	return ""
 }
 
-func (x *ProductSearch) GetTitle() string {
+func (x *ProductSearchWithPagination) GetTitle() string {
 	if x != nil {
 		return x.Title
 	}
 	return ""
 }
 
-func (x *ProductSearch) GetArticle() string {
+func (x *ProductSearchWithPagination) GetArticle() string {
 	if x != nil {
 		return x.Article
 	}
 	return ""
 }
 
+func (x *ProductSearchWithPagination) GetPag() *Pagination {
+	if x != nil {
+		return x.Pag
+	}
+	return nil
+}
+
 type ProductList struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Items         []*Product             `protobuf:"bytes,1,rep,name=items,proto3" json:"items,omitempty"`
+	Total         int32                  `protobuf:"varint,2,opt,name=total,proto3" json:"total,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -263,6 +272,13 @@ func (x *ProductList) GetItems() []*Product {
 		return x.Items
 	}
 	return nil
+}
+
+func (x *ProductList) GetTotal() int32 {
+	if x != nil {
+		return x.Total
+	}
+	return 0
 }
 
 type BrandList struct {
@@ -791,6 +807,7 @@ type Product struct {
 	Price         int32                  `protobuf:"varint,14,opt,name=price,proto3" json:"price,omitempty"`
 	Description   string                 `protobuf:"bytes,15,opt,name=description,proto3" json:"description,omitempty"`
 	Views         int32                  `protobuf:"varint,16,opt,name=views,proto3" json:"views,omitempty"`
+	IsFavorite    bool                   `protobuf:"varint,17,opt,name=is_favorite,json=isFavorite,proto3" json:"is_favorite,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -937,6 +954,13 @@ func (x *Product) GetViews() int32 {
 	return 0
 }
 
+func (x *Product) GetIsFavorite() bool {
+	if x != nil {
+		return x.IsFavorite
+	}
+	return false
+}
+
 type ProductId struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
@@ -955,6 +979,7 @@ type ProductId struct {
 	Price         int32                  `protobuf:"varint,14,opt,name=price,proto3" json:"price,omitempty"`
 	Description   string                 `protobuf:"bytes,15,opt,name=description,proto3" json:"description,omitempty"`
 	Views         int32                  `protobuf:"varint,16,opt,name=views,proto3" json:"views,omitempty"`
+	IsFavorite    bool                   `protobuf:"varint,17,opt,name=is_favorite,json=isFavorite,proto3" json:"is_favorite,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -1099,6 +1124,13 @@ func (x *ProductId) GetViews() int32 {
 		return x.Views
 	}
 	return 0
+}
+
+func (x *ProductId) GetIsFavorite() bool {
+	if x != nil {
+		return x.IsFavorite
+	}
+	return false
 }
 
 type ProductFilter struct {
@@ -1779,6 +1811,7 @@ type Article struct {
 	Img           string                 `protobuf:"bytes,2,opt,name=img,proto3" json:"img,omitempty"`
 	Title         string                 `protobuf:"bytes,3,opt,name=title,proto3" json:"title,omitempty"`
 	Text          string                 `protobuf:"bytes,4,opt,name=text,proto3" json:"text,omitempty"`
+	CreationTime  int64                  `protobuf:"varint,5,opt,name=creationTime,proto3" json:"creationTime,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -1841,6 +1874,13 @@ func (x *Article) GetText() string {
 	return ""
 }
 
+func (x *Article) GetCreationTime() int64 {
+	if x != nil {
+		return x.CreationTime
+	}
+	return 0
+}
+
 var File_domain_proto protoreflect.FileDescriptor
 
 const file_domain_proto_rawDesc = "" +
@@ -1853,13 +1893,15 @@ const file_domain_proto_rawDesc = "" +
 	"\x02Id\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\"\x1d\n" +
 	"\x05Title\x12\x14\n" +
-	"\x05title\x18\x01 \x01(\tR\x05title\"O\n" +
-	"\rProductSearch\x12\x0e\n" +
+	"\x05title\x18\x01 \x01(\tR\x05title\"\x85\x01\n" +
+	"\x1bProductSearchWithPagination\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x12\x14\n" +
 	"\x05title\x18\x02 \x01(\tR\x05title\x12\x18\n" +
-	"\aarticle\x18\x03 \x01(\tR\aarticle\"6\n" +
+	"\aarticle\x18\x03 \x01(\tR\aarticle\x12&\n" +
+	"\x03pag\x18\x04 \x01(\v2\x14.products.PaginationR\x03pag\"L\n" +
 	"\vProductList\x12'\n" +
-	"\x05items\x18\x01 \x03(\v2\x11.products.ProductR\x05items\"2\n" +
+	"\x05items\x18\x01 \x03(\v2\x11.products.ProductR\x05items\x12\x14\n" +
+	"\x05total\x18\x02 \x01(\x05R\x05total\"2\n" +
 	"\tBrandList\x12%\n" +
 	"\x05items\x18\x01 \x03(\v2\x0f.products.BrandR\x05items\"8\n" +
 	"\fCategoryList\x12(\n" +
@@ -1886,7 +1928,7 @@ const file_domain_proto_rawDesc = "" +
 	"\x16ProductColorPhotosList\x122\n" +
 	"\x05items\x18\x01 \x03(\v2\x1c.products.ProductColorPhotosR\x05items\"!\n" +
 	"\tPhotoList\x12\x14\n" +
-	"\x05items\x18\x01 \x03(\tR\x05items\"\xfb\x03\n" +
+	"\x05items\x18\x01 \x03(\tR\x05items\"\x9c\x04\n" +
 	"\aProduct\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x12\x14\n" +
 	"\x05title\x18\x02 \x01(\tR\x05title\x12\x18\n" +
@@ -1904,7 +1946,9 @@ const file_domain_proto_rawDesc = "" +
 	"\x05seems\x18\r \x03(\v2\x11.products.ProductR\x05seems\x12\x14\n" +
 	"\x05price\x18\x0e \x01(\x05R\x05price\x12 \n" +
 	"\vdescription\x18\x0f \x01(\tR\vdescription\x12\x14\n" +
-	"\x05views\x18\x10 \x01(\x05R\x05views\"\x8d\x03\n" +
+	"\x05views\x18\x10 \x01(\x05R\x05views\x12\x1f\n" +
+	"\vis_favorite\x18\x11 \x01(\bR\n" +
+	"isFavorite\"\xae\x03\n" +
 	"\tProductId\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x12\x14\n" +
 	"\x05title\x18\x02 \x01(\tR\x05title\x12\x18\n" +
@@ -1922,7 +1966,9 @@ const file_domain_proto_rawDesc = "" +
 	"\x05seems\x18\r \x03(\tR\x05seems\x12\x14\n" +
 	"\x05price\x18\x0e \x01(\x05R\x05price\x12 \n" +
 	"\vdescription\x18\x0f \x01(\tR\vdescription\x12\x14\n" +
-	"\x05views\x18\x10 \x01(\x05R\x05views\"\xe3\x03\n" +
+	"\x05views\x18\x10 \x01(\x05R\x05views\x12\x1f\n" +
+	"\vis_favorite\x18\x11 \x01(\bR\n" +
+	"isFavorite\"\xe3\x03\n" +
 	"\rProductFilter\x12\x14\n" +
 	"\x05brand\x18\x01 \x03(\tR\x05brand\x12\x18\n" +
 	"\acountry\x18\x02 \x03(\tR\acountry\x12\x1a\n" +
@@ -1987,12 +2033,13 @@ const file_domain_proto_rawDesc = "" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x12\x12\n" +
 	"\x04link\x18\x02 \x01(\tR\x04link\x12\x10\n" +
 	"\x03img\x18\x03 \x01(\tR\x03img\x12\x16\n" +
-	"\x06img762\x18\x04 \x01(\tR\x06img762\"U\n" +
+	"\x06img762\x18\x04 \x01(\tR\x06img762\"y\n" +
 	"\aArticle\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x12\x10\n" +
 	"\x03img\x18\x02 \x01(\tR\x03img\x12\x14\n" +
 	"\x05title\x18\x03 \x01(\tR\x05title\x12\x12\n" +
-	"\x04text\x18\x04 \x01(\tR\x04textB3Z1github.com/autumnterror/volha-backend;productsRPCb\x06proto3"
+	"\x04text\x18\x04 \x01(\tR\x04text\x12\"\n" +
+	"\fcreationTime\x18\x05 \x01(\x03R\fcreationTimeB3Z1github.com/autumnterror/volha-backend;productsRPCb\x06proto3"
 
 var (
 	file_domain_proto_rawDescOnce sync.Once
@@ -2008,60 +2055,61 @@ func file_domain_proto_rawDescGZIP() []byte {
 
 var file_domain_proto_msgTypes = make([]protoimpl.MessageInfo, 27)
 var file_domain_proto_goTypes = []any{
-	(*Pagination)(nil),             // 0: products.Pagination
-	(*Id)(nil),                     // 1: products.Id
-	(*Title)(nil),                  // 2: products.Title
-	(*ProductSearch)(nil),          // 3: products.ProductSearch
-	(*ProductList)(nil),            // 4: products.ProductList
-	(*BrandList)(nil),              // 5: products.BrandList
-	(*CategoryList)(nil),           // 6: products.CategoryList
-	(*CountryList)(nil),            // 7: products.CountryList
-	(*MaterialList)(nil),           // 8: products.MaterialList
-	(*ColorList)(nil),              // 9: products.ColorList
-	(*SlideList)(nil),              // 10: products.SlideList
-	(*ArticleList)(nil),            // 11: products.ArticleList
-	(*ProductColorPhotos)(nil),     // 12: products.ProductColorPhotos
-	(*ProductColorPhotosId)(nil),   // 13: products.ProductColorPhotosId
-	(*ProductColorPhotosList)(nil), // 14: products.ProductColorPhotosList
-	(*PhotoList)(nil),              // 15: products.PhotoList
-	(*Product)(nil),                // 16: products.Product
-	(*ProductId)(nil),              // 17: products.ProductId
-	(*ProductFilter)(nil),          // 18: products.ProductFilter
-	(*Dictionaries)(nil),           // 19: products.Dictionaries
-	(*Brand)(nil),                  // 20: products.Brand
-	(*Category)(nil),               // 21: products.Category
-	(*Country)(nil),                // 22: products.Country
-	(*Material)(nil),               // 23: products.Material
-	(*Color)(nil),                  // 24: products.Color
-	(*Slide)(nil),                  // 25: products.Slide
-	(*Article)(nil),                // 26: products.Article
+	(*Pagination)(nil),                  // 0: products.Pagination
+	(*Id)(nil),                          // 1: products.Id
+	(*Title)(nil),                       // 2: products.Title
+	(*ProductSearchWithPagination)(nil), // 3: products.ProductSearchWithPagination
+	(*ProductList)(nil),                 // 4: products.ProductList
+	(*BrandList)(nil),                   // 5: products.BrandList
+	(*CategoryList)(nil),                // 6: products.CategoryList
+	(*CountryList)(nil),                 // 7: products.CountryList
+	(*MaterialList)(nil),                // 8: products.MaterialList
+	(*ColorList)(nil),                   // 9: products.ColorList
+	(*SlideList)(nil),                   // 10: products.SlideList
+	(*ArticleList)(nil),                 // 11: products.ArticleList
+	(*ProductColorPhotos)(nil),          // 12: products.ProductColorPhotos
+	(*ProductColorPhotosId)(nil),        // 13: products.ProductColorPhotosId
+	(*ProductColorPhotosList)(nil),      // 14: products.ProductColorPhotosList
+	(*PhotoList)(nil),                   // 15: products.PhotoList
+	(*Product)(nil),                     // 16: products.Product
+	(*ProductId)(nil),                   // 17: products.ProductId
+	(*ProductFilter)(nil),               // 18: products.ProductFilter
+	(*Dictionaries)(nil),                // 19: products.Dictionaries
+	(*Brand)(nil),                       // 20: products.Brand
+	(*Category)(nil),                    // 21: products.Category
+	(*Country)(nil),                     // 22: products.Country
+	(*Material)(nil),                    // 23: products.Material
+	(*Color)(nil),                       // 24: products.Color
+	(*Slide)(nil),                       // 25: products.Slide
+	(*Article)(nil),                     // 26: products.Article
 }
 var file_domain_proto_depIdxs = []int32{
-	16, // 0: products.ProductList.items:type_name -> products.Product
-	20, // 1: products.BrandList.items:type_name -> products.Brand
-	21, // 2: products.CategoryList.items:type_name -> products.Category
-	22, // 3: products.CountryList.items:type_name -> products.Country
-	23, // 4: products.MaterialList.items:type_name -> products.Material
-	24, // 5: products.ColorList.items:type_name -> products.Color
-	25, // 6: products.SlideList.items:type_name -> products.Slide
-	26, // 7: products.ArticleList.items:type_name -> products.Article
-	12, // 8: products.ProductColorPhotosList.items:type_name -> products.ProductColorPhotos
-	20, // 9: products.Product.brand:type_name -> products.Brand
-	21, // 10: products.Product.category:type_name -> products.Category
-	22, // 11: products.Product.country:type_name -> products.Country
-	23, // 12: products.Product.materials:type_name -> products.Material
-	24, // 13: products.Product.colors:type_name -> products.Color
-	16, // 14: products.Product.seems:type_name -> products.Product
-	20, // 15: products.Dictionaries.brands:type_name -> products.Brand
-	21, // 16: products.Dictionaries.categories:type_name -> products.Category
-	22, // 17: products.Dictionaries.countries:type_name -> products.Country
-	23, // 18: products.Dictionaries.materials:type_name -> products.Material
-	24, // 19: products.Dictionaries.colors:type_name -> products.Color
-	20, // [20:20] is the sub-list for method output_type
-	20, // [20:20] is the sub-list for method input_type
-	20, // [20:20] is the sub-list for extension type_name
-	20, // [20:20] is the sub-list for extension extendee
-	0,  // [0:20] is the sub-list for field type_name
+	0,  // 0: products.ProductSearchWithPagination.pag:type_name -> products.Pagination
+	16, // 1: products.ProductList.items:type_name -> products.Product
+	20, // 2: products.BrandList.items:type_name -> products.Brand
+	21, // 3: products.CategoryList.items:type_name -> products.Category
+	22, // 4: products.CountryList.items:type_name -> products.Country
+	23, // 5: products.MaterialList.items:type_name -> products.Material
+	24, // 6: products.ColorList.items:type_name -> products.Color
+	25, // 7: products.SlideList.items:type_name -> products.Slide
+	26, // 8: products.ArticleList.items:type_name -> products.Article
+	12, // 9: products.ProductColorPhotosList.items:type_name -> products.ProductColorPhotos
+	20, // 10: products.Product.brand:type_name -> products.Brand
+	21, // 11: products.Product.category:type_name -> products.Category
+	22, // 12: products.Product.country:type_name -> products.Country
+	23, // 13: products.Product.materials:type_name -> products.Material
+	24, // 14: products.Product.colors:type_name -> products.Color
+	16, // 15: products.Product.seems:type_name -> products.Product
+	20, // 16: products.Dictionaries.brands:type_name -> products.Brand
+	21, // 17: products.Dictionaries.categories:type_name -> products.Category
+	22, // 18: products.Dictionaries.countries:type_name -> products.Country
+	23, // 19: products.Dictionaries.materials:type_name -> products.Material
+	24, // 20: products.Dictionaries.colors:type_name -> products.Color
+	21, // [21:21] is the sub-list for method output_type
+	21, // [21:21] is the sub-list for method input_type
+	21, // [21:21] is the sub-list for extension type_name
+	21, // [21:21] is the sub-list for extension extendee
+	0,  // [0:21] is the sub-list for field type_name
 }
 
 func init() { file_domain_proto_init() }

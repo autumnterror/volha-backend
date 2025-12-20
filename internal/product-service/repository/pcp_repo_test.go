@@ -2,6 +2,7 @@ package repository
 
 import (
 	"context"
+	"github.com/autumnterror/volha-backend/internal/product-service/infra/psql"
 	"github.com/autumnterror/volha-backend/pkg/views"
 	"testing"
 
@@ -15,7 +16,7 @@ func TestGoodProductColorPhotos(t *testing.T) {
 	t.Parallel()
 	ctx := context.Background()
 
-	db, err := NewConnect(config.Test())
+	db, err := psql.NewConnect(config.Test())
 	assert.NoError(t, err)
 
 	tx, err := db.Driver.Begin()
@@ -78,7 +79,7 @@ func TestBadProductColorPhotos(t *testing.T) {
 	t.Parallel()
 	ctx := context.Background()
 
-	db, err := NewConnect(config.Test())
+	db, err := psql.NewConnect(config.Test())
 	assert.NoError(t, err)
 
 	tx, err := db.Driver.Begin()

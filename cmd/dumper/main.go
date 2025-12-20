@@ -10,9 +10,12 @@ import (
 	"sort"
 	"strconv"
 	"time"
+
+	"github.com/joho/godotenv"
 )
 
 const maxDumps = 20
+const dumpTime = 1 * time.Hour
 
 var dumpRegexp = regexp.MustCompile(`^dump\.\d{8}_\d{6}\.sql$`)
 
@@ -83,12 +86,15 @@ func dump(user, password, host, db string, port int) {
 }
 
 func main() {
+	if err := godotenv.Load(); err != nil {
+		log.Fatalln("BAD .ENV FILE: ", err)
+	}
 	user := os.Getenv("POSTGRES_USER")
 	password := os.Getenv("POSTGRES_PASSWORD")
 	db := os.Getenv("POSTGRES_DB")
 	host := os.Getenv("POSTGRES_HOST")
-	if host == "" {
-		host = "localhost"
+	if user == "" || password == "" || db == "" || host == "" {
+		log.Fatal("bad env")
 	}
 	portStr := os.Getenv("POSTGRES_PORT")
 	if portStr == "" {
@@ -104,11 +110,11 @@ func main() {
 	}
 
 	//dump(user, password, host, db, port)
-	log.Printf("next dump in %s", time.Now().Local().Add(time.Hour).Format("20060102_150405"))
-	ticker := time.NewTicker(time.Hour)
+	log.Printf("next dump in %s", time.Now().Local().Add(dumpTime).Format("20060102_150405"))
+	ticker := time.NewTicker(dumpTime)
 	defer ticker.Stop()
 	for range ticker.C {
 		dump(user, password, host, db, port)
-		log.Printf("next dump in %s", time.Now().Local().Add(time.Hour).Format("20060102_150405"))
+		log.Printf("next dump in %s", time.Now().Local().Add(dumpTime).Format("20060102_150405"))
 	}
 }

@@ -15,28 +15,26 @@ import (
 )
 
 type ProductRepo interface {
-	GetAllProducts(ctx context.Context, start, end int) ([]*domain.Product, error)
+	GetAllProducts(ctx context.Context, start, end int) ([]*domain.Product, int, error)
 	GetProduct(ctx context.Context, id string) (*domain.Product, error)
 	CreateProduct(ctx context.Context, p *domain.ProductId) error
 	UpdateProduct(ctx context.Context, p *domain.ProductId) error
 	IncrementViews(ctx context.Context, id string) error
 	DeleteProduct(ctx context.Context, id string) error
-	SearchProducts(ctx context.Context, filter *domain.ProductSearch) ([]*domain.Product, error)
-	FilterProducts(ctx context.Context, filter *domain.ProductFilter) ([]*domain.Product, error)
+	SearchProducts(ctx context.Context, filter *domain.ProductSearch) ([]*domain.Product, int, error)
+	FilterProducts(ctx context.Context, filter *domain.ProductFilter) ([]*domain.Product, int, error)
 }
 
-func (d Driver) GetAllProducts(ctx context.Context, start, end int) ([]*domain.Product, error) {
+func (d Driver) GetAllProducts(ctx context.Context, start, end int) ([]*domain.Product, int, error) {
 	const op = "PostgresDb.GetAllProducts"
 
 	if end <= start {
-		return []*domain.Product{}, nil
+		return []*domain.Product{}, 0, nil
 	}
 
-	limit := end - start
-
-	rows, err := d.Driver.QueryContext(ctx, getAllProductsQuery, limit, start)
+	rows, err := d.Driver.QueryContext(ctx, getAllProductsQuery)
 	if err != nil {
-		return nil, format.Error(op, err)
+		return nil, 0, format.Error(op, err)
 	}
 	defer rows.Close()
 
@@ -59,7 +57,8 @@ func (d Driver) GetAllProducts(ctx context.Context, start, end int) ([]*domain.P
 			&p.Price,
 			&p.Description,
 			&p.Views,
-
+			&p.IsFavorite,
+			
 			&p.Brand.Id,
 			&p.Brand.Title,
 
@@ -96,10 +95,18 @@ func (d Driver) GetAllProducts(ctx context.Context, start, end int) ([]*domain.P
 	}
 
 	if err := rows.Err(); err != nil {
-		return nil, format.Error(op, err)
+		return nil, 0, format.Error(op, err)
 	}
 
-	return products, nil
+	if start >= len(products) || end == 0 {
+		return []*domain.Product{}, len(products), nil
+	}
+
+	if end > len(products) {
+		end = len(products)
+	}
+	newProducts := products[start:end]
+	return newProducts, len(products), nil
 }
 
 func (d Driver) GetProduct(ctx context.Context, id string) (*domain.Product, error) {
@@ -112,7 +119,7 @@ func (d Driver) GetProduct(ctx context.Context, id string) (*domain.Product, err
 	p := domain.NewEmptyProduct()
 	err := d.Driver.QueryRowContext(ctx, getProductQuery, id).Scan(
 		&p.Id, &p.Title, &p.Article, &p.Width, &p.Height, &p.Depth,
-		pq.Array(&p.Photos), &p.Price, &p.Description, &p.Views,
+		pq.Array(&p.Photos), &p.Price, &p.Description, &p.Views, &p.IsFavorite,
 		&p.Brand.Id, &p.Brand.Title,
 		&p.Category.Id, &p.Category.Title, &p.Category.Uri,
 		&p.Country.Id, &p.Country.Title, &p.Country.Friendly,
@@ -147,7 +154,7 @@ func (d Driver) CreateProduct(ctx context.Context, p *domain.ProductId) error {
 		ctx,
 		createProductQuery,
 		p.Id, p.Title, p.Article, p.Brand, p.Category, p.Country, p.Width, p.Height, p.Depth,
-		pq.Array(p.Photos), p.Price, p.Description, p.Views,
+		pq.Array(p.Photos), p.Price, p.Description, p.Views, p.IsFavorite,
 		pq.Array(p.Materials), pq.Array(p.Colors), pq.Array(p.Seems),
 	)
 	if err != nil {
@@ -173,7 +180,7 @@ func (d Driver) UpdateProduct(ctx context.Context, p *domain.ProductId) error {
 
 	res, err := d.Driver.ExecContext(ctx, updateProductQuery,
 		p.Id, p.Title, p.Article, p.Brand, p.Category, p.Country, p.Width, p.Height, p.Depth,
-		pq.Array(p.Photos), p.Price, p.Description, p.Views,
+		pq.Array(p.Photos), p.Price, p.Description, p.Views, p.IsFavorite,
 		pq.Array(p.Materials), pq.Array(p.Colors), pq.Array(p.Seems),
 	)
 	if err != nil {
@@ -229,7 +236,7 @@ func (d Driver) DeleteProduct(ctx context.Context, id string) error {
 	return nil
 }
 
-func (d Driver) SearchProducts(ctx context.Context, filter *domain.ProductSearch) ([]*domain.Product, error) {
+func (d Driver) SearchProducts(ctx context.Context, filter *domain.ProductSearch) ([]*domain.Product, int, error) {
 	const op = "PostgresDb.SearchProducts"
 
 	var (
@@ -248,12 +255,11 @@ func (d Driver) SearchProducts(ctx context.Context, filter *domain.ProductSearch
 		query += ` WHERE p.title ILIKE $1`
 		args = append(args, "%"+filter.Title+"%")
 	default:
-		return nil, format.Error(op, errors.New("no search parameter provided"))
+		return nil, 0, format.Error(op, errors.New("no search parameter provided"))
 	}
-
 	rows, err := d.Driver.QueryContext(ctx, query, args...)
 	if err != nil {
-		return nil, format.Error(op, err)
+		return nil, 0, format.Error(op, err)
 	}
 	defer rows.Close()
 
@@ -267,7 +273,7 @@ func (d Driver) SearchProducts(ctx context.Context, filter *domain.ProductSearch
 		p := domain.NewEmptyProduct()
 		if err := rows.Scan(
 			&p.Id, &p.Title, &p.Article, &p.Width, &p.Height, &p.Depth,
-			pq.Array(&p.Photos), &p.Price, &p.Description,
+			pq.Array(&p.Photos), &p.Price, &p.Description, &p.Views, &p.IsFavorite,
 			&p.Brand.Id, &p.Brand.Title,
 			&p.Category.Id, &p.Category.Title, &p.Category.Uri,
 			&p.Country.Id, &p.Country.Title, &p.Country.Friendly,
@@ -294,13 +300,21 @@ func (d Driver) SearchProducts(ctx context.Context, filter *domain.ProductSearch
 	}
 
 	if err := rows.Err(); err != nil {
-		return nil, format.Error(op, err)
+		return nil, 0, format.Error(op, err)
 	}
 
-	return products, nil
+	if filter.Start >= int32(len(products)) || filter.Finish == 0 {
+		return []*domain.Product{}, len(products), nil
+	}
+
+	if filter.Finish > int32(len(products)) {
+		filter.Finish = int32(len(products))
+	}
+	newProducts := products[filter.Start:filter.Finish]
+	return newProducts, len(products), nil
 }
 
-func (d Driver) FilterProducts(ctx context.Context, filter *domain.ProductFilter) ([]*domain.Product, error) {
+func (d Driver) FilterProducts(ctx context.Context, filter *domain.ProductFilter) ([]*domain.Product, int, error) {
 	const op = "PostgresDb.FilterProducts"
 
 	var conditions []string
@@ -391,19 +405,9 @@ func (d Driver) FilterProducts(ctx context.Context, filter *domain.ProductFilter
 		}
 	}
 
-	if filter.Limit > 0 {
-		query += fmt.Sprintf(" LIMIT $%d", argPos)
-		args = append(args, filter.Limit)
-		argPos++
-	}
-	if filter.Offset > 0 {
-		query += fmt.Sprintf(" OFFSET $%d", argPos)
-		args = append(args, filter.Offset)
-	}
-
 	rows, err := d.Driver.QueryContext(ctx, query, args...)
 	if err != nil {
-		return nil, format.Error(op, err)
+		return nil, 0, format.Error(op, err)
 	}
 	defer rows.Close()
 
@@ -426,6 +430,7 @@ func (d Driver) FilterProducts(ctx context.Context, filter *domain.ProductFilter
 			&p.Price,
 			&p.Description,
 			&p.Views,
+			&p.IsFavorite,
 
 			&p.Brand.Id,
 			&p.Brand.Title,
@@ -463,8 +468,16 @@ func (d Driver) FilterProducts(ctx context.Context, filter *domain.ProductFilter
 	}
 
 	if err := rows.Err(); err != nil {
-		return nil, format.Error(op, err)
+		return nil, 0, format.Error(op, err)
 	}
 
-	return products, nil
+	if filter.Offset >= int32(len(products)) {
+		return []*domain.Product{}, len(products), nil
+	}
+
+	if filter.Limit == 0 || filter.Limit > int32(len(products)) {
+		filter.Limit = int32(len(products))
+	}
+	newProducts := products[filter.Offset:filter.Limit]
+	return newProducts, len(products), nil
 }

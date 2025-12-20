@@ -1,5 +1,18 @@
 basePath: /
 definitions:
+  productsRPC.Article:
+    properties:
+      creationTime:
+        type: integer
+      id:
+        type: string
+      img:
+        type: string
+      text:
+        type: string
+      title:
+        type: string
+    type: object
   productsRPC.Brand:
     properties:
       id:
@@ -104,6 +117,8 @@ definitions:
         type: integer
       id:
         type: string
+      is_favorite:
+        type: boolean
       materials:
         items:
           $ref: '#/definitions/productsRPC.Material'
@@ -120,6 +135,8 @@ definitions:
         type: array
       title:
         type: string
+      views:
+        type: integer
       width:
         type: integer
     type: object
@@ -210,6 +227,8 @@ definitions:
         type: integer
       id:
         type: string
+      is_favorite:
+        type: boolean
       materials:
         items:
           type: string
@@ -226,6 +245,8 @@ definitions:
         type: array
       title:
         type: string
+      views:
+        type: integer
       width:
         type: integer
     type: object
@@ -273,6 +294,145 @@ info:
   title: Volha gateway REST API
   version: "0.1"
 paths:
+  /api/article:
+    delete:
+      description: Удаляет статью по ID
+      parameters:
+      - description: ID статью
+        in: query
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: успех
+          schema:
+            $ref: '#/definitions/views.SWGMessage'
+        "400":
+          description: неправильный ввод
+          schema:
+            $ref: '#/definitions/views.SWGError'
+        "404":
+          description: не найдено
+          schema:
+            $ref: '#/definitions/views.SWGError'
+        "502":
+          description: ошибка в микросервисе
+          schema:
+            $ref: '#/definitions/views.SWGError'
+      summary: Удалить статью
+      tags:
+      - blog
+    get:
+      description: Возвращает статью по id
+      parameters:
+      - description: ID статью
+        in: query
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: успех
+          schema:
+            $ref: '#/definitions/productsRPC.Article'
+        "502":
+          description: ошибка в микросервисе
+          schema:
+            $ref: '#/definitions/views.SWGError'
+      summary: Получить статью
+      tags:
+      - blog
+    post:
+      consumes:
+      - application/json
+      description: Добавляет новую статью. Id и CreationTime создаются автоматически.
+        Можно передавать значения по умолчанию
+      parameters:
+      - description: Данные новой статьи
+        in: body
+        name: article
+        required: true
+        schema:
+          $ref: '#/definitions/productsRPC.Article'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: успех
+          schema:
+            $ref: '#/definitions/views.SWGId'
+        "400":
+          description: неправильный ввод
+          schema:
+            $ref: '#/definitions/views.SWGError'
+        "409":
+          description: уже существует
+          schema:
+            $ref: '#/definitions/views.SWGError'
+        "502":
+          description: ошибка в микросервисе
+          schema:
+            $ref: '#/definitions/views.SWGError'
+      summary: Создать новую статью
+      tags:
+      - blog
+    put:
+      consumes:
+      - application/json
+      description: Обновляет информацию о статье по ID
+      parameters:
+      - description: Данные статьи
+        in: body
+        name: article
+        required: true
+        schema:
+          $ref: '#/definitions/productsRPC.Article'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: успех
+          schema:
+            $ref: '#/definitions/views.SWGMessage'
+        "400":
+          description: неправильный ввод
+          schema:
+            $ref: '#/definitions/views.SWGError'
+        "404":
+          description: не найдено
+          schema:
+            $ref: '#/definitions/views.SWGError'
+        "502":
+          description: ошибка в микросервисе
+          schema:
+            $ref: '#/definitions/views.SWGError'
+      summary: Обновить статью
+      tags:
+      - blog
+  /api/article/all:
+    get:
+      description: Возвращает список статей
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: успех
+          schema:
+            items:
+              $ref: '#/definitions/productsRPC.Article'
+            type: array
+        "502":
+          description: ошибка в микросервисе
+          schema:
+            $ref: '#/definitions/views.SWGError'
+      summary: Получить все статьи
+      tags:
+      - blog
   /api/auth/check:
     get:
       description: проверяет пароль из cookie
@@ -1429,6 +1589,16 @@ paths:
         name: prompt
         required: true
         type: string
+      - description: start > 0
+        in: query
+        name: start
+        required: true
+        type: integer
+      - description: end
+        in: query
+        name: end
+        required: true
+        type: integer
       produces:
       - application/json
       responses:

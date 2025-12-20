@@ -2,6 +2,7 @@ package service
 
 import (
 	"errors"
+	"time"
 
 	"github.com/autumnterror/volha-backend/internal/product-service/domain"
 	"github.com/autumnterror/volha-backend/pkg/views"
@@ -123,6 +124,9 @@ func validateBasicPayload(obj any, _type views.Type) error {
 		}
 		if sl.Img == "" {
 			return errors.New("article img is empty")
+		}
+		if sl.CreationTime == 0 {
+			sl.CreationTime = time.Now().UTC().Unix()
 		}
 	default:
 		return domain.ErrUnknownType

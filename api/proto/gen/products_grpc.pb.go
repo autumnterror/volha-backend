@@ -76,7 +76,7 @@ const (
 type ProductsClient interface {
 	GetDictionaries(ctx context.Context, in *Id, opts ...grpc.CallOption) (*Dictionaries, error)
 	// Products
-	SearchProducts(ctx context.Context, in *ProductSearch, opts ...grpc.CallOption) (*ProductList, error)
+	SearchProducts(ctx context.Context, in *ProductSearchWithPagination, opts ...grpc.CallOption) (*ProductList, error)
 	CreateProduct(ctx context.Context, in *ProductId, opts ...grpc.CallOption) (*emptypb.Empty, error)
 	UpdateProduct(ctx context.Context, in *ProductId, opts ...grpc.CallOption) (*emptypb.Empty, error)
 	DeleteProduct(ctx context.Context, in *Id, opts ...grpc.CallOption) (*emptypb.Empty, error)
@@ -151,7 +151,7 @@ func (c *productsClient) GetDictionaries(ctx context.Context, in *Id, opts ...gr
 	return out, nil
 }
 
-func (c *productsClient) SearchProducts(ctx context.Context, in *ProductSearch, opts ...grpc.CallOption) (*ProductList, error) {
+func (c *productsClient) SearchProducts(ctx context.Context, in *ProductSearchWithPagination, opts ...grpc.CallOption) (*ProductList, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(ProductList)
 	err := c.cc.Invoke(ctx, Products_SearchProducts_FullMethodName, in, out, cOpts...)
@@ -627,7 +627,7 @@ func (c *productsClient) GetPhotosByProductAndColor(ctx context.Context, in *Pro
 type ProductsServer interface {
 	GetDictionaries(context.Context, *Id) (*Dictionaries, error)
 	// Products
-	SearchProducts(context.Context, *ProductSearch) (*ProductList, error)
+	SearchProducts(context.Context, *ProductSearchWithPagination) (*ProductList, error)
 	CreateProduct(context.Context, *ProductId) (*emptypb.Empty, error)
 	UpdateProduct(context.Context, *ProductId) (*emptypb.Empty, error)
 	DeleteProduct(context.Context, *Id) (*emptypb.Empty, error)
@@ -695,7 +695,7 @@ type UnimplementedProductsServer struct{}
 func (UnimplementedProductsServer) GetDictionaries(context.Context, *Id) (*Dictionaries, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetDictionaries not implemented")
 }
-func (UnimplementedProductsServer) SearchProducts(context.Context, *ProductSearch) (*ProductList, error) {
+func (UnimplementedProductsServer) SearchProducts(context.Context, *ProductSearchWithPagination) (*ProductList, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method SearchProducts not implemented")
 }
 func (UnimplementedProductsServer) CreateProduct(context.Context, *ProductId) (*emptypb.Empty, error) {
@@ -876,7 +876,7 @@ func _Products_GetDictionaries_Handler(srv interface{}, ctx context.Context, dec
 }
 
 func _Products_SearchProducts_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(ProductSearch)
+	in := new(ProductSearchWithPagination)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -888,7 +888,7 @@ func _Products_SearchProducts_Handler(srv interface{}, ctx context.Context, dec 
 		FullMethod: Products_SearchProducts_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ProductsServer).SearchProducts(ctx, req.(*ProductSearch))
+		return srv.(ProductsServer).SearchProducts(ctx, req.(*ProductSearchWithPagination))
 	}
 	return interceptor(ctx, in, info, handler)
 }

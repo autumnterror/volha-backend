@@ -4,6 +4,8 @@ import (
 	"context"
 	"testing"
 
+	"github.com/autumnterror/volha-backend/internal/product-service/infra/psql"
+
 	"github.com/autumnterror/volha-backend/pkg/views"
 
 	"github.com/autumnterror/breezynotes/pkg/log"
@@ -20,7 +22,7 @@ func TestProductGood(t *testing.T) {
 	t.Run("product good bad", func(t *testing.T) {
 		t.Parallel()
 
-		db, err := NewConnect(config.Test())
+		db, err := psql.NewConnect(config.Test())
 		assert.NoError(t, err)
 
 		tx, err := db.Driver.Begin()
@@ -60,11 +62,12 @@ func TestProductGood(t *testing.T) {
 			Price:       100,
 			Description: "test",
 			Views:       1000,
+			IsFavorite:  true,
 		}))
 
-		p, err := driver.GetAllProducts(ctx, 0, 10)
+		p, total, err := driver.GetAllProducts(ctx, 0, 10)
 		if assert.NoError(t, err) {
-			log.Green("products after create", p)
+			log.Green("products after create", p, " total: ", total)
 		}
 
 		brand = &domain.Brand{Id: "brand2", Title: "new TestBrand"}
@@ -97,6 +100,7 @@ func TestProductGood(t *testing.T) {
 			Price:       100,
 			Description: "test",
 			Views:       int32(newViews),
+			IsFavorite:  false,
 		}))
 
 		assert.NoError(t, driver.IncrementViews(ctx, "test-product"))
@@ -108,28 +112,34 @@ func TestProductGood(t *testing.T) {
 
 		assert.Equal(t, int32(newViews+1), pr.Views)
 
-		res, err := driver.SearchProducts(ctx, &domain.ProductSearch{
+		res, total, err := driver.SearchProducts(ctx, &domain.ProductSearch{
 			Id:      "",
 			Title:   "new test",
 			Article: "",
+			Start:   0,
+			Finish:  10,
 		})
-		if assert.NoError(t, err) && assert.NotEqual(t, 0, len(res)) {
+		if assert.NoError(t, err) && assert.NotEqual(t, 0, len(res)) && assert.NotEqual(t, 0, total) {
 			log.Green("search by title ", res)
 		}
-		res, err = driver.SearchProducts(ctx, &domain.ProductSearch{
+		res, total, err = driver.SearchProducts(ctx, &domain.ProductSearch{
 			Id:      "",
 			Title:   "",
 			Article: "new test",
+			Start:   0,
+			Finish:  0,
 		})
-		if assert.NoError(t, err) && assert.NotEqual(t, 0, len(res)) {
+		if assert.NoError(t, err) && assert.Equal(t, 0, len(res)) && assert.NotEqual(t, 0, total) {
 			log.Green("search by article full ", res)
 		}
-		res, err = driver.SearchProducts(ctx, &domain.ProductSearch{
+		res, total, err = driver.SearchProducts(ctx, &domain.ProductSearch{
 			Id:      "",
 			Title:   "ew",
 			Article: "",
+			Start:   0,
+			Finish:  10,
 		})
-		if assert.NoError(t, err) && assert.NotEqual(t, 0, len(res)) {
+		if assert.NoError(t, err) && assert.NotEqual(t, 0, len(res)) && assert.NotEqual(t, 0, total) {
 			log.Green("search by article not full ", res)
 		}
 
@@ -142,7 +152,7 @@ func TestProductFilters(t *testing.T) {
 
 	ctx := context.Background()
 
-	db, err := NewConnect(config.Test())
+	db, err := psql.NewConnect(config.Test())
 	assert.NoError(t, err)
 
 	tx, err := db.Driver.Begin()
@@ -180,6 +190,7 @@ func TestProductFilters(t *testing.T) {
 		Price:       888,
 		Description: "Filtered",
 		Views:       1000,
+		IsFavorite:  false,
 	}
 	assert.NoError(t, driver.CreateProduct(ctx, product))
 
@@ -215,9 +226,10 @@ func TestProductFilters(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			result, err := driver.FilterProducts(ctx, &tt.filter)
+			result, total, err := driver.FilterProducts(ctx, &tt.filter)
 			assert.NoError(t, err)
 			assert.NotEmpty(t, result)
+			assert.NotEqual(t, 0, total)
 			log.Printf("Filter '%s' returned %d product(s)\n", tt.name, len(result))
 		})
 	}

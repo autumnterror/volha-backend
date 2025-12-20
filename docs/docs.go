@@ -19,6 +19,215 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
+        "/api/article": {
+            "get": {
+                "description": "Возвращает статью по id",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "blog"
+                ],
+                "summary": "Получить статью",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "ID статью",
+                        "name": "id",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "успех",
+                        "schema": {
+                            "$ref": "#/definitions/productsRPC.Article"
+                        }
+                    },
+                    "502": {
+                        "description": "ошибка в микросервисе",
+                        "schema": {
+                            "$ref": "#/definitions/views.SWGError"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "description": "Обновляет информацию о статье по ID",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "blog"
+                ],
+                "summary": "Обновить статью",
+                "parameters": [
+                    {
+                        "description": "Данные статьи",
+                        "name": "article",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/productsRPC.Article"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "успех",
+                        "schema": {
+                            "$ref": "#/definitions/views.SWGMessage"
+                        }
+                    },
+                    "400": {
+                        "description": "неправильный ввод",
+                        "schema": {
+                            "$ref": "#/definitions/views.SWGError"
+                        }
+                    },
+                    "404": {
+                        "description": "не найдено",
+                        "schema": {
+                            "$ref": "#/definitions/views.SWGError"
+                        }
+                    },
+                    "502": {
+                        "description": "ошибка в микросервисе",
+                        "schema": {
+                            "$ref": "#/definitions/views.SWGError"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "description": "Добавляет новую статью. Id и CreationTime создаются автоматически. Можно передавать значения по умолчанию",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "blog"
+                ],
+                "summary": "Создать новую статью",
+                "parameters": [
+                    {
+                        "description": "Данные новой статьи",
+                        "name": "article",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/productsRPC.Article"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "успех",
+                        "schema": {
+                            "$ref": "#/definitions/views.SWGId"
+                        }
+                    },
+                    "400": {
+                        "description": "неправильный ввод",
+                        "schema": {
+                            "$ref": "#/definitions/views.SWGError"
+                        }
+                    },
+                    "409": {
+                        "description": "уже существует",
+                        "schema": {
+                            "$ref": "#/definitions/views.SWGError"
+                        }
+                    },
+                    "502": {
+                        "description": "ошибка в микросервисе",
+                        "schema": {
+                            "$ref": "#/definitions/views.SWGError"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "description": "Удаляет статью по ID",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "blog"
+                ],
+                "summary": "Удалить статью",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "ID статью",
+                        "name": "id",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "успех",
+                        "schema": {
+                            "$ref": "#/definitions/views.SWGMessage"
+                        }
+                    },
+                    "400": {
+                        "description": "неправильный ввод",
+                        "schema": {
+                            "$ref": "#/definitions/views.SWGError"
+                        }
+                    },
+                    "404": {
+                        "description": "не найдено",
+                        "schema": {
+                            "$ref": "#/definitions/views.SWGError"
+                        }
+                    },
+                    "502": {
+                        "description": "ошибка в микросервисе",
+                        "schema": {
+                            "$ref": "#/definitions/views.SWGError"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/article/all": {
+            "get": {
+                "description": "Возвращает список статей",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "blog"
+                ],
+                "summary": "Получить все статьи",
+                "responses": {
+                    "200": {
+                        "description": "успех",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/productsRPC.Article"
+                            }
+                        }
+                    },
+                    "502": {
+                        "description": "ошибка в микросервисе",
+                        "schema": {
+                            "$ref": "#/definitions/views.SWGError"
+                        }
+                    }
+                }
+            }
+        },
         "/api/auth/check": {
             "get": {
                 "description": "проверяет пароль из cookie",
@@ -1767,6 +1976,20 @@ const docTemplate = `{
                         "name": "prompt",
                         "in": "query",
                         "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "start \u003e 0",
+                        "name": "start",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "end",
+                        "name": "end",
+                        "in": "query",
+                        "required": true
                     }
                 ],
                 "responses": {
@@ -2005,6 +2228,26 @@ const docTemplate = `{
         }
     },
     "definitions": {
+        "productsRPC.Article": {
+            "type": "object",
+            "properties": {
+                "creationTime": {
+                    "type": "integer"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "img": {
+                    "type": "string"
+                },
+                "text": {
+                    "type": "string"
+                },
+                "title": {
+                    "type": "string"
+                }
+            }
+        },
         "productsRPC.Brand": {
             "type": "object",
             "properties": {
@@ -2164,6 +2407,9 @@ const docTemplate = `{
                 "id": {
                     "type": "string"
                 },
+                "is_favorite": {
+                    "type": "boolean"
+                },
                 "materials": {
                     "type": "array",
                     "items": {
@@ -2187,6 +2433,9 @@ const docTemplate = `{
                 },
                 "title": {
                     "type": "string"
+                },
+                "views": {
+                    "type": "integer"
                 },
                 "width": {
                     "type": "integer"
@@ -2325,6 +2574,9 @@ const docTemplate = `{
                 "id": {
                     "type": "string"
                 },
+                "is_favorite": {
+                    "type": "boolean"
+                },
                 "materials": {
                     "type": "array",
                     "items": {
@@ -2348,6 +2600,9 @@ const docTemplate = `{
                 },
                 "title": {
                     "type": "string"
+                },
+                "views": {
+                    "type": "integer"
                 },
                 "width": {
                     "type": "integer"

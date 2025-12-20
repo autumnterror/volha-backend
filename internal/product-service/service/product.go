@@ -6,16 +6,16 @@ import (
 	"github.com/autumnterror/volha-backend/internal/product-service/domain"
 )
 
-func (s *ProductsService) GetAllProducts(ctx context.Context, start, end int) ([]*domain.Product, error) {
+func (s *ProductsService) GetAllProducts(ctx context.Context, start, end int) ([]*domain.Product, int, error) {
 	const op = "service.GetAllProducts"
 
 	if err := validateProductRange(start, end); err != nil {
-		return nil, wrapServiceCheck(op, err)
+		return nil, 0, wrapServiceCheck(op, err)
 	}
 
 	repo, err := s.productRepo(ctx)
 	if err != nil {
-		return nil, wrapServiceCheck(op, err)
+		return nil, 0, wrapServiceCheck(op, err)
 	}
 	return repo.GetAllProducts(ctx, start, end)
 }
@@ -89,30 +89,30 @@ func (s *ProductsService) DeleteProduct(ctx context.Context, id string) error {
 	})
 }
 
-func (s *ProductsService) SearchProducts(ctx context.Context, filter *domain.ProductSearch) ([]*domain.Product, error) {
+func (s *ProductsService) SearchProducts(ctx context.Context, filter *domain.ProductSearch) ([]*domain.Product, int, error) {
 	const op = "service.SearchProducts"
 
 	if err := validateSearch(filter); err != nil {
-		return nil, wrapServiceCheck(op, err)
+		return nil, 0, wrapServiceCheck(op, err)
 	}
 
 	repo, err := s.productRepo(ctx)
 	if err != nil {
-		return nil, wrapServiceCheck(op, err)
+		return nil, 0, wrapServiceCheck(op, err)
 	}
 	return repo.SearchProducts(ctx, filter)
 }
 
-func (s *ProductsService) FilterProducts(ctx context.Context, filter *domain.ProductFilter) ([]*domain.Product, error) {
+func (s *ProductsService) FilterProducts(ctx context.Context, filter *domain.ProductFilter) ([]*domain.Product, int, error) {
 	const op = "service.FilterProducts"
 
 	if err := validateFilter(filter); err != nil {
-		return nil, wrapServiceCheck(op, err)
+		return nil, 0, wrapServiceCheck(op, err)
 	}
 
 	repo, err := s.productRepo(ctx)
 	if err != nil {
-		return nil, wrapServiceCheck(op, err)
+		return nil, 0, wrapServiceCheck(op, err)
 	}
 	return repo.FilterProducts(ctx, filter)
 }

@@ -119,7 +119,7 @@ type articleScanner struct {
 
 func (s *articleScanner) Scan(rows *sql.Rows) error {
 	var a domain.Article
-	if err := rows.Scan(&a.Id, &a.Title, &a.Img, &a.Text); err != nil {
+	if err := rows.Scan(&a.Id, &a.Title, &a.Img, &a.Text, &a.CreationTime); err != nil {
 		return err
 	}
 	s.list = append(s.list, &a)
@@ -245,7 +245,7 @@ type articleScannerRow struct {
 
 func (s *articleScannerRow) Scan(rows *sql.Row) error {
 	var a domain.Article
-	if err := rows.Scan(&a.Id, &a.Title, &a.Img, &a.Text); err != nil {
+	if err := rows.Scan(&a.Id, &a.Title, &a.Img, &a.Text, &a.CreationTime); err != nil {
 		return err
 	}
 	s.a = &a

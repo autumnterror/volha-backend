@@ -19,6 +19,7 @@ type Product struct {
 	Price       int32       `json:"price"`
 	Description string      `json:"description"`
 	Views       int32       `json:"views"`
+	IsFavorite  bool        `json:"is_favorite"`
 }
 
 type ProductId struct {
@@ -38,6 +39,7 @@ type ProductId struct {
 	Price       int32    `json:"price"`
 	Description string   `json:"description"`
 	Views       int32    `json:"views"`
+	IsFavorite  bool     `json:"is_favorite"`
 }
 
 func NewEmptyProduct() Product {
@@ -70,6 +72,7 @@ func NewEmptyProduct() Product {
 		Price:       0,
 		Description: "",
 		Views:       0,
+		IsFavorite:  false,
 	}
 }
 
@@ -97,6 +100,8 @@ type ProductSearch struct {
 	Id      string `json:"id"`
 	Title   string `json:"title"`
 	Article string `json:"article"`
+	Start   int32  `json:"start"`
+	Finish  int32  `json:"end"`
 }
 
 func ProductFromRpc(p *productsRPC.Product) *Product {
@@ -142,6 +147,7 @@ func ProductFromRpc(p *productsRPC.Product) *Product {
 		Price:       p.GetPrice(),
 		Description: p.GetDescription(),
 		Views:       p.GetViews(),
+		IsFavorite:  p.GetIsFavorite(),
 	}
 }
 
@@ -188,6 +194,7 @@ func ProductToRpc(p *Product) *productsRPC.Product {
 		Price:       p.Price,
 		Description: p.Description,
 		Views:       p.Views,
+		IsFavorite:  p.IsFavorite,
 	}
 }
 
@@ -232,6 +239,7 @@ func ProductIdFromRpc(p *productsRPC.ProductId) *ProductId {
 		Price:       p.GetPrice(),
 		Description: p.GetDescription(),
 		Views:       p.Views,
+		IsFavorite:  p.GetIsFavorite(),
 	}
 }
 
@@ -256,6 +264,7 @@ func ProductIdToRpc(p *ProductId) *productsRPC.ProductId {
 		Price:       p.Price,
 		Description: p.Description,
 		Views:       p.Views,
+		IsFavorite:  p.IsFavorite,
 	}
 }
 
@@ -309,7 +318,7 @@ func ProductFilterToRpc(f *ProductFilter) *productsRPC.ProductFilter {
 	}
 }
 
-func ProductSearchFromRpc(s *productsRPC.ProductSearch) *ProductSearch {
+func ProductSearchFromRpc(s *productsRPC.ProductSearchWithPagination) *ProductSearch {
 	if s == nil {
 		return nil
 	}
@@ -317,16 +326,22 @@ func ProductSearchFromRpc(s *productsRPC.ProductSearch) *ProductSearch {
 		Id:      s.GetId(),
 		Title:   s.GetTitle(),
 		Article: s.GetArticle(),
+		Start:   s.Pag.Start,
+		Finish:  s.Pag.Finish,
 	}
 }
 
-func ProductSearchToRpc(s *ProductSearch) *productsRPC.ProductSearch {
+func ProductSearchToRpc(s *ProductSearch) *productsRPC.ProductSearchWithPagination {
 	if s == nil {
 		return nil
 	}
-	return &productsRPC.ProductSearch{
+	return &productsRPC.ProductSearchWithPagination{
 		Id:      s.Id,
 		Title:   s.Title,
 		Article: s.Article,
+		Pag: &productsRPC.Pagination{
+			Start:  s.Start,
+			Finish: s.Finish,
+		},
 	}
 }

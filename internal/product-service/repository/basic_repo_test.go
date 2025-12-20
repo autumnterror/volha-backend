@@ -2,8 +2,11 @@ package repository
 
 import (
 	"context"
-	"github.com/autumnterror/volha-backend/pkg/views"
+	"github.com/autumnterror/volha-backend/internal/product-service/infra/psql"
 	"testing"
+	"time"
+
+	"github.com/autumnterror/volha-backend/pkg/views"
 
 	"github.com/autumnterror/breezynotes/pkg/log"
 	"github.com/autumnterror/volha-backend/internal/product-service/config"
@@ -18,7 +21,7 @@ func TestGoodSimpleTables(t *testing.T) {
 	t.Run("brands", func(t *testing.T) {
 		t.Parallel()
 
-		db, err := NewConnect(config.Test())
+		db, err := psql.NewConnect(config.Test())
 		assert.NoError(t, err)
 
 		tx, err := db.Driver.Begin()
@@ -51,7 +54,7 @@ func TestGoodSimpleTables(t *testing.T) {
 	t.Run("categories", func(t *testing.T) {
 		t.Parallel()
 
-		db, err := NewConnect(config.Test())
+		db, err := psql.NewConnect(config.Test())
 		assert.NoError(t, err)
 
 		tx, err := db.Driver.Begin()
@@ -85,7 +88,7 @@ func TestGoodSimpleTables(t *testing.T) {
 	t.Run("countries", func(t *testing.T) {
 		t.Parallel()
 
-		db, err := NewConnect(config.Test())
+		db, err := psql.NewConnect(config.Test())
 		assert.NoError(t, err)
 
 		tx, err := db.Driver.Begin()
@@ -119,7 +122,7 @@ func TestGoodSimpleTables(t *testing.T) {
 	t.Run("materials", func(t *testing.T) {
 		t.Parallel()
 
-		db, err := NewConnect(config.Test())
+		db, err := psql.NewConnect(config.Test())
 		assert.NoError(t, err)
 
 		tx, err := db.Driver.Begin()
@@ -150,7 +153,7 @@ func TestGoodSimpleTables(t *testing.T) {
 	t.Run("colors", func(t *testing.T) {
 		t.Parallel()
 
-		db, err := NewConnect(config.Test())
+		db, err := psql.NewConnect(config.Test())
 		assert.NoError(t, err)
 
 		tx, err := db.Driver.Begin()
@@ -184,7 +187,7 @@ func TestGoodSimpleTables(t *testing.T) {
 	t.Run("slide", func(t *testing.T) {
 		t.Parallel()
 
-		db, err := NewConnect(config.Test())
+		db, err := psql.NewConnect(config.Test())
 		assert.NoError(t, err)
 
 		tx, err := db.Driver.Begin()
@@ -218,7 +221,7 @@ func TestGoodSimpleTables(t *testing.T) {
 	t.Run("article", func(t *testing.T) {
 		t.Parallel()
 
-		db, err := NewConnect(config.Test())
+		db, err := psql.NewConnect(config.Test())
 		assert.NoError(t, err)
 
 		tx, err := db.Driver.Begin()
@@ -231,8 +234,8 @@ func TestGoodSimpleTables(t *testing.T) {
 			db.Disconnect()
 		})
 
-		s := &domain.Article{Id: "article test", Title: "Title", Img: "img.jpg", Text: "# zagolovok"}
-		updated := &domain.Article{Id: "article test", Title: "newTitle", Img: "newimg.jpg", Text: "# newzagolovok"}
+		s := &domain.Article{Id: "article test", Title: "Title", Img: "img.jpg", Text: "# zagolovok", CreationTime: time.Now().Unix()}
+		updated := &domain.Article{Id: "article test", Title: "newTitle", Img: "newimg.jpg", Text: "# newzagolovok", CreationTime: time.Now().Unix()}
 
 		assert.NoError(t, driver.Create(ctx, s, views.Article))
 
@@ -256,7 +259,7 @@ func TestBadSimpleTables(t *testing.T) {
 	t.Run("brands bad", func(t *testing.T) {
 		t.Parallel()
 
-		db, err := NewConnect(config.Test())
+		db, err := psql.NewConnect(config.Test())
 		assert.NoError(t, err)
 
 		tx, err := db.Driver.Begin()
@@ -297,7 +300,7 @@ func TestBadSimpleTables(t *testing.T) {
 	t.Run("categories bad", func(t *testing.T) {
 		t.Parallel()
 
-		db, err := NewConnect(config.Test())
+		db, err := psql.NewConnect(config.Test())
 		assert.NoError(t, err)
 
 		tx, err := db.Driver.Begin()
@@ -339,7 +342,7 @@ func TestBadSimpleTables(t *testing.T) {
 	t.Run("countries bad", func(t *testing.T) {
 		t.Parallel()
 
-		db, err := NewConnect(config.Test())
+		db, err := psql.NewConnect(config.Test())
 		assert.NoError(t, err)
 
 		tx, err := db.Driver.Begin()
@@ -381,7 +384,7 @@ func TestBadSimpleTables(t *testing.T) {
 	t.Run("materials bad", func(t *testing.T) {
 		t.Parallel()
 
-		db, err := NewConnect(config.Test())
+		db, err := psql.NewConnect(config.Test())
 		assert.NoError(t, err)
 
 		tx, err := db.Driver.Begin()
@@ -422,7 +425,7 @@ func TestBadSimpleTables(t *testing.T) {
 	t.Run("colors bad", func(t *testing.T) {
 		t.Parallel()
 
-		db, err := NewConnect(config.Test())
+		db, err := psql.NewConnect(config.Test())
 		assert.NoError(t, err)
 
 		tx, err := db.Driver.Begin()
@@ -463,7 +466,7 @@ func TestBadSimpleTables(t *testing.T) {
 	t.Run("slides bad", func(t *testing.T) {
 		t.Parallel()
 
-		db, err := NewConnect(config.Test())
+		db, err := psql.NewConnect(config.Test())
 		assert.NoError(t, err)
 
 		tx, err := db.Driver.Begin()
@@ -504,7 +507,7 @@ func TestBadSimpleTables(t *testing.T) {
 	t.Run("articles bad", func(t *testing.T) {
 		t.Parallel()
 
-		db, err := NewConnect(config.Test())
+		db, err := psql.NewConnect(config.Test())
 		assert.NoError(t, err)
 
 		tx, err := db.Driver.Begin()
@@ -519,7 +522,7 @@ func TestBadSimpleTables(t *testing.T) {
 		assert.ErrorIs(t, driver.Create(ctx, 2, views.Article), domain.ErrInvalidType)
 		assert.ErrorIs(t, driver.Create(ctx, 2, 19), domain.ErrUnknownType)
 
-		s := &domain.Article{Id: "article test", Title: "Title", Img: "img.jpg", Text: "# zagolovok"}
+		s := &domain.Article{Id: "article test", Title: "Title", Img: "img.jpg", Text: "# zagolovok", CreationTime: time.Now().Unix()}
 		tx1, err := db.Driver.Begin()
 		assert.NoError(t, err)
 		{

@@ -1,4 +1,4 @@
-package psql
+package psqltx
 
 import (
 	"context"
@@ -18,7 +18,7 @@ type txKey struct{}
 
 func (r *TxRunner) RunInTx(ctx context.Context, fn func(ctx context.Context) error) error {
 	const op = "psql.RunInTx"
-	
+
 	if tx, ok := TxFromContext(ctx); ok {
 		if err := fn(ctx); err != nil {
 			errR := tx.Rollback()

@@ -1,0 +1,2 @@
+ALTER TABLE products
+    ADD COLUMN is_favorite BOOL NOT NULL DEFAULT FALSE;

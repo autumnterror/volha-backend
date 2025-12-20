@@ -16,13 +16,15 @@ cu:
 	docker compose -f ./build/volha/docker-compose.yml up -d
 cd:
 	docker compose -f ./build/volha/docker-compose.yml down
+cd-v:
+	docker compose -f ./build/volha/docker-compose.yml down -v
 
 bldmig:
 	go build -o ./build/volha/migrator.exe ./cmd/product-service/migrator
 bldmig-mac:
 	go build -o ./build/volha/migrator ./cmd/product-service/migrator
 docx:
-	swag init --dir ./cmd/gateway,./internal/gateway/net/handlers,./pkg/views,./pkg/proto/gen --output ./docs
+	swag init --dir ./cmd/gateway,./internal/gateway/net/handlers,./pkg/views,./api/proto/gen --output ./docs
 bld-a:
 	docker build -t zitrax78/volha-gateway --file ./build/docker/gateway/dockerfile .
 	docker build -t zitrax78/product-service --file ./build/docker/product-service/dockerfile .
@@ -39,6 +41,7 @@ pull-a:
 	docker pull zitrax78/volha-gateway
 	docker pull zitrax78/product-service
 	docker pull zitrax78/dumper
+
 #-------------------------test-------------------------
 t-m:
 	go test -run $(METHOD) ./... -v

@@ -1,2 +1,2 @@
 ALTER TABLE products
-    ADD COLUMN views INT;
+    ADD COLUMN views INT NOT NULL DEFAULT 0;

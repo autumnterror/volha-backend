@@ -84,6 +84,14 @@ func (a *Apis) getAll(c echo.Context, op string, _type views.Type) (any, int, vi
 			res = l.GetItems()
 		}
 		err = nErr
+	case views.Article:
+		l, nErr := a.apiProduct.API.GetAllArticles(ctx, nil)
+		if len(l.GetItems()) == 0 {
+			res = []*productsRPC.Article{}
+		} else {
+			res = l.GetItems()
+		}
+		err = nErr
 	default:
 		return nil, http.StatusInternalServerError, views.SWGError{Error: "bad type on gateway"}
 	}
@@ -122,6 +130,9 @@ func (a *Apis) get(c echo.Context, op string, _type views.Type) (any, int, views
 		res, err = a.apiProduct.API.GetSlide(ctx, &productsRPC.Id{Id: id})
 	case views.Product:
 		res, err = a.apiProduct.API.GetProduct(ctx, &productsRPC.Id{Id: id})
+	case views.Article:
+		res, err = a.apiProduct.API.GetArticle(ctx, &productsRPC.Id{Id: id})
+
 	default:
 		return nil, http.StatusInternalServerError, views.SWGError{Error: "bad type on gateway"}
 	}
@@ -232,6 +243,18 @@ func (a *Apis) create(c echo.Context, op string, _type views.Type) (any, int, vi
 			return nil, code, swg
 		}
 		return views.SWGId{Id: s.Id}, http.StatusOK, views.SWGError{}
+	case views.Article:
+		var s productsRPC.Article
+		if err := c.Bind(&s); err != nil {
+			return nil, http.StatusBadRequest, views.SWGError{Error: "bad JSON"}
+		}
+		s.Id = xid.New().String()
+		s.CreationTime = time.Now().UTC().Unix()
+		if _, err := a.apiProduct.API.CreateArticle(ctx, &s); err != nil {
+			code, swg := a.mapGRPCError(op, err)
+			return nil, code, swg
+		}
+		return views.SWGId{Id: s.Id}, http.StatusOK, views.SWGError{}
 	default:
 		return nil, http.StatusInternalServerError, views.SWGError{Error: "bad type on gateway"}
 	}
@@ -326,6 +349,16 @@ func (a *Apis) update(c echo.Context, op string, _type views.Type) (any, int, vi
 			return nil, code, swg
 		}
 		return views.SWGMessage{Message: "slide updated successfully"}, http.StatusOK, views.SWGError{}
+	case views.Article:
+		var s productsRPC.Article
+		if err := c.Bind(&s); err != nil {
+			return nil, http.StatusBadRequest, views.SWGError{Error: "bad JSON"}
+		}
+		if _, err := a.apiProduct.API.UpdateArticle(ctx, &s); err != nil {
+			code, swg := a.mapGRPCError(op, err)
+			return nil, code, swg
+		}
+		return views.SWGMessage{Message: "article updated successfully"}, http.StatusOK, views.SWGError{}
 	default:
 		return nil, http.StatusInternalServerError, views.SWGError{Error: "bad type on gateway"}
 	}
@@ -384,6 +417,12 @@ func (a *Apis) delete(c echo.Context, op string, _type views.Type) (any, int, vi
 			return nil, code, swg
 		}
 		return views.SWGMessage{Message: "slide deleted"}, http.StatusOK, views.SWGError{}
+	case views.Article:
+		if _, err := a.apiProduct.API.DeleteArticle(ctx, &productsRPC.Id{Id: id}); err != nil {
+			code, swg := a.mapGRPCError(op, err)
+			return nil, code, swg
+		}
+		return views.SWGMessage{Message: "article deleted"}, http.StatusOK, views.SWGError{}
 	default:
 		return nil, http.StatusInternalServerError, views.SWGError{Error: "bad type on gateway"}
 	}

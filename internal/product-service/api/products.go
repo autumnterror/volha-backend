@@ -10,21 +10,22 @@ import (
 	"google.golang.org/protobuf/types/known/emptypb"
 )
 
-func (s *ServerAPI) SearchProducts(ctx context.Context, req *productsRPC.ProductSearch) (*productsRPC.ProductList, error) {
+func (s *ServerAPI) SearchProducts(ctx context.Context, req *productsRPC.ProductSearchWithPagination) (*productsRPC.ProductList, error) {
 	const op = "grpc.SearchProducts"
 	log.Blue(op)
 
 	res, err := handleCRUDResponse(ctx, op, func() (any, error) {
-		return s.s.SearchProducts(ctx, domain.ProductSearchFromRpc(req))
+		pr, t, err := s.s.SearchProducts(ctx, domain.ProductSearchFromRpc(req))
+		return &productsRPC.ProductList{
+			Items: domain.ProductsToRpc(pr),
+			Total: int32(t),
+		}, err
 	})
 	if err != nil {
 		return nil, err
 	}
 
-	products := res.([]*domain.Product)
-	return &productsRPC.ProductList{
-		Items: domain.ProductsToRpc(products),
-	}, nil
+	return res.(*productsRPC.ProductList), nil
 }
 
 func (s *ServerAPI) FilterProducts(ctx context.Context, req *productsRPC.ProductFilter) (*productsRPC.ProductList, error) {
@@ -32,16 +33,17 @@ func (s *ServerAPI) FilterProducts(ctx context.Context, req *productsRPC.Product
 	log.Blue(op)
 
 	res, err := handleCRUDResponse(ctx, op, func() (any, error) {
-		return s.s.FilterProducts(ctx, domain.ProductFilterFromRpc(req))
+		pr, t, err := s.s.FilterProducts(ctx, domain.ProductFilterFromRpc(req))
+		return &productsRPC.ProductList{
+			Items: domain.ProductsToRpc(pr),
+			Total: int32(t),
+		}, err
 	})
 	if err != nil {
 		return nil, err
 	}
 
-	products := res.([]*domain.Product)
-	return &productsRPC.ProductList{
-		Items: domain.ProductsToRpc(products),
-	}, nil
+	return res.(*productsRPC.ProductList), nil
 }
 
 func (s *ServerAPI) GetAllProducts(ctx context.Context, req *productsRPC.Pagination) (*productsRPC.ProductList, error) {
@@ -49,16 +51,17 @@ func (s *ServerAPI) GetAllProducts(ctx context.Context, req *productsRPC.Paginat
 	log.Blue(op)
 
 	res, err := handleCRUDResponse(ctx, op, func() (any, error) {
-		return s.s.GetAllProducts(ctx, int(req.GetStart()), int(req.GetFinish()))
+		pr, t, err := s.s.GetAllProducts(ctx, int(req.GetStart()), int(req.GetFinish()))
+		return &productsRPC.ProductList{
+			Items: domain.ProductsToRpc(pr),
+			Total: int32(t),
+		}, err
 	})
 	if err != nil {
 		return nil, err
 	}
 
-	products := res.([]*domain.Product)
-	return &productsRPC.ProductList{
-		Items: domain.ProductsToRpc(products),
-	}, nil
+	return res.(*productsRPC.ProductList), nil
 }
 
 func (s *ServerAPI) GetProduct(ctx context.Context, req *productsRPC.Id) (*productsRPC.Product, error) {

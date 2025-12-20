@@ -50,7 +50,7 @@ func (d Driver) GetAll(ctx context.Context, _type views.Type) (any, error) {
 		query = `SELECT id, link, img, img762 FROM slides`
 	case views.Article:
 		scanner = &articleScanner{}
-		query = `SELECT id, title, img, text FROM articles`
+		query = `SELECT id, title, img, text, creation_time FROM articles ORDER BY creation_time DESC`
 	default:
 		return nil, format.Error(op, domain.ErrUnknownType)
 	}
@@ -101,7 +101,7 @@ func (d Driver) Get(
 		query = `SELECT id, link, img, img762 FROM slides WHERE id = $1`
 	case views.Article:
 		scanner = &articleScannerRow{}
-		query = `SELECT id, title, img, text FROM articles WHERE id = $1`
+		query = `SELECT id, title, img, text, creation_time FROM articles WHERE id = $1`
 	default:
 		return nil, format.Error(op, domain.ErrUnknownType)
 	}
@@ -183,11 +183,12 @@ func (d Driver) Create(
 		if !ok {
 			return format.Error(op, domain.ErrInvalidType)
 		}
-		query = `INSERT INTO articles (id, title, img, text) VALUES ($1, $2, $3, $4)`
+		query = `INSERT INTO articles (id, title, img, text, creation_time) VALUES ($1, $2, $3, $4, $5)`
 		args = append(args, b.Id)
 		args = append(args, b.Title)
 		args = append(args, b.Img)
 		args = append(args, b.Text)
+		args = append(args, b.CreationTime)
 	default:
 		return format.Error(op, domain.ErrUnknownType)
 	}
@@ -279,11 +280,12 @@ func (d Driver) Update(
 		if !ok {
 			return format.Error(op, domain.ErrInvalidType)
 		}
-		query = `UPDATE articles SET title = $2, img = $3, text = $4 WHERE id = $1`
+		query = `UPDATE articles SET title = $2, img = $3, text = $4, creation_time = $5 WHERE id = $1`
 		args = append(args, b.Id)
 		args = append(args, b.Title)
 		args = append(args, b.Img)
 		args = append(args, b.Text)
+		args = append(args, b.CreationTime)
 	default:
 		return format.Error(op, domain.ErrUnknownType)
 	}

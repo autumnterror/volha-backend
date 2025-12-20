@@ -9,12 +9,12 @@ import (
 )
 
 // CreateArticle godoc
-// @Summary Создать новый бренд
-// @Description Добавляет новый бренд
-// @Tags articles
+// @Summary Создать новую статью
+// @Description Добавляет новую статью. Id и CreationTime создаются автоматически. Можно передавать значения по умолчанию
+// @Tags blog
 // @Accept json
 // @Produce json
-// @Param article body productsRPC.Article true "Данные нового бренда"
+// @Param article body productsRPC.Article true "Данные новой статьи"
 // @Success 200 {object} views.SWGId "успех"
 // @Failure 400 {object} views.SWGError "неправильный ввод"
 // @Failure 409 {object} views.SWGError "уже существует"
@@ -33,12 +33,12 @@ func (a *Apis) CreateArticle(c echo.Context) error {
 }
 
 // UpdateArticle godoc
-// @Summary Обновить бренд
-// @Description Обновляет информацию о бренде по ID
-// @Tags articles
+// @Summary Обновить статью
+// @Description Обновляет информацию о статье по ID
+// @Tags blog
 // @Accept json
 // @Produce json
-// @Param article body productsRPC.Article true "Данные бренда"
+// @Param article body productsRPC.Article true "Данные статьи"
 // @Success 200 {object} views.SWGMessage "успех"
 // @Failure 400 {object} views.SWGError "неправильный ввод"
 // @Failure 404 {object} views.SWGError "не найдено"
@@ -57,11 +57,11 @@ func (a *Apis) UpdateArticle(c echo.Context) error {
 }
 
 // DeleteArticle godoc
-// @Summary Удалить бренд
-// @Description Удаляет бренд по ID
-// @Tags articles
+// @Summary Удалить статью
+// @Description Удаляет статью по ID
+// @Tags blog
 // @Produce json
-// @Param id query string true "ID бренда"
+// @Param id query string true "ID статью"
 // @Success 200 {object} views.SWGMessage "успех"
 // @Failure 400 {object} views.SWGError "неправильный ввод"
 // @Failure 404 {object} views.SWGError "не найдено"
@@ -80,9 +80,9 @@ func (a *Apis) DeleteArticle(c echo.Context) error {
 }
 
 // GetAllArticles godoc
-// @Summary Получить все бренды
-// @Description Возвращает список брендов
-// @Tags articles
+// @Summary Получить все статьи
+// @Description Возвращает список статей
+// @Tags blog
 // @Produce json
 // @Success 200 {object} []productsRPC.Article "успех"
 // @Failure 502 {object} views.SWGError "ошибка в микросервисе"
@@ -100,11 +100,11 @@ func (a *Apis) GetAllArticles(c echo.Context) error {
 }
 
 // GetArticle godoc
-// @Summary Получить бренд
-// @Description Возвращает бренд по id
-// @Tags articles
+// @Summary Получить статью
+// @Description Возвращает статью по id
+// @Tags blog
 // @Produce json
-// @Param id query string true "ID бренда"
+// @Param id query string true "ID статью"
 // @Success 200 {object} productsRPC.Article "успех"
 // @Failure 502 {object} views.SWGError "ошибка в микросервисе"
 // @Router /api/article [get]

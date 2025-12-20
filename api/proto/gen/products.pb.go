@@ -25,10 +25,10 @@ var File_products_proto protoreflect.FileDescriptor
 
 const file_products_proto_rawDesc = "" +
 	"\n" +
-	"\x0eproducts.proto\x12\bproducts\x1a\x1bgoogle/protobuf/empty.proto\x1a\fdomain.proto2\xc0\x16\n" +
+	"\x0eproducts.proto\x12\bproducts\x1a\x1bgoogle/protobuf/empty.proto\x1a\fdomain.proto2\xce\x16\n" +
 	"\bProducts\x127\n" +
-	"\x0fGetDictionaries\x12\f.products.Id\x1a\x16.products.Dictionaries\x12@\n" +
-	"\x0eSearchProducts\x12\x17.products.ProductSearch\x1a\x15.products.ProductList\x12<\n" +
+	"\x0fGetDictionaries\x12\f.products.Id\x1a\x16.products.Dictionaries\x12N\n" +
+	"\x0eSearchProducts\x12%.products.ProductSearchWithPagination\x1a\x15.products.ProductList\x12<\n" +
 	"\rCreateProduct\x12\x13.products.ProductId\x1a\x16.google.protobuf.Empty\x12<\n" +
 	"\rUpdateProduct\x12\x13.products.ProductId\x1a\x16.google.protobuf.Empty\x125\n" +
 	"\rDeleteProduct\x12\f.products.Id\x1a\x16.google.protobuf.Empty\x12=\n" +
@@ -80,37 +80,37 @@ const file_products_proto_rawDesc = "" +
 	"\x1aGetPhotosByProductAndColor\x12\x1e.products.ProductColorPhotosId\x1a\x13.products.PhotoListB3Z1github.com/autumnterror/volha-backend;productsRPCb\x06proto3"
 
 var file_products_proto_goTypes = []any{
-	(*Id)(nil),                     // 0: products.Id
-	(*ProductSearch)(nil),          // 1: products.ProductSearch
-	(*ProductId)(nil),              // 2: products.ProductId
-	(*Pagination)(nil),             // 3: products.Pagination
-	(*ProductFilter)(nil),          // 4: products.ProductFilter
-	(*Brand)(nil),                  // 5: products.Brand
-	(*emptypb.Empty)(nil),          // 6: google.protobuf.Empty
-	(*Category)(nil),               // 7: products.Category
-	(*Country)(nil),                // 8: products.Country
-	(*Material)(nil),               // 9: products.Material
-	(*Color)(nil),                  // 10: products.Color
-	(*Slide)(nil),                  // 11: products.Slide
-	(*Article)(nil),                // 12: products.Article
-	(*ProductColorPhotos)(nil),     // 13: products.ProductColorPhotos
-	(*ProductColorPhotosId)(nil),   // 14: products.ProductColorPhotosId
-	(*Dictionaries)(nil),           // 15: products.Dictionaries
-	(*ProductList)(nil),            // 16: products.ProductList
-	(*Product)(nil),                // 17: products.Product
-	(*BrandList)(nil),              // 18: products.BrandList
-	(*CategoryList)(nil),           // 19: products.CategoryList
-	(*CountryList)(nil),            // 20: products.CountryList
-	(*MaterialList)(nil),           // 21: products.MaterialList
-	(*ColorList)(nil),              // 22: products.ColorList
-	(*SlideList)(nil),              // 23: products.SlideList
-	(*ArticleList)(nil),            // 24: products.ArticleList
-	(*ProductColorPhotosList)(nil), // 25: products.ProductColorPhotosList
-	(*PhotoList)(nil),              // 26: products.PhotoList
+	(*Id)(nil),                          // 0: products.Id
+	(*ProductSearchWithPagination)(nil), // 1: products.ProductSearchWithPagination
+	(*ProductId)(nil),                   // 2: products.ProductId
+	(*Pagination)(nil),                  // 3: products.Pagination
+	(*ProductFilter)(nil),               // 4: products.ProductFilter
+	(*Brand)(nil),                       // 5: products.Brand
+	(*emptypb.Empty)(nil),               // 6: google.protobuf.Empty
+	(*Category)(nil),                    // 7: products.Category
+	(*Country)(nil),                     // 8: products.Country
+	(*Material)(nil),                    // 9: products.Material
+	(*Color)(nil),                       // 10: products.Color
+	(*Slide)(nil),                       // 11: products.Slide
+	(*Article)(nil),                     // 12: products.Article
+	(*ProductColorPhotos)(nil),          // 13: products.ProductColorPhotos
+	(*ProductColorPhotosId)(nil),        // 14: products.ProductColorPhotosId
+	(*Dictionaries)(nil),                // 15: products.Dictionaries
+	(*ProductList)(nil),                 // 16: products.ProductList
+	(*Product)(nil),                     // 17: products.Product
+	(*BrandList)(nil),                   // 18: products.BrandList
+	(*CategoryList)(nil),                // 19: products.CategoryList
+	(*CountryList)(nil),                 // 20: products.CountryList
+	(*MaterialList)(nil),                // 21: products.MaterialList
+	(*ColorList)(nil),                   // 22: products.ColorList
+	(*SlideList)(nil),                   // 23: products.SlideList
+	(*ArticleList)(nil),                 // 24: products.ArticleList
+	(*ProductColorPhotosList)(nil),      // 25: products.ProductColorPhotosList
+	(*PhotoList)(nil),                   // 26: products.PhotoList
 }
 var file_products_proto_depIdxs = []int32{
 	0,  // 0: products.Products.GetDictionaries:input_type -> products.Id
-	1,  // 1: products.Products.SearchProducts:input_type -> products.ProductSearch
+	1,  // 1: products.Products.SearchProducts:input_type -> products.ProductSearchWithPagination
 	2,  // 2: products.Products.CreateProduct:input_type -> products.ProductId
 	2,  // 3: products.Products.UpdateProduct:input_type -> products.ProductId
 	0,  // 4: products.Products.DeleteProduct:input_type -> products.Id

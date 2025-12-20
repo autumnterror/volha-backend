@@ -11,7 +11,7 @@ service Products {
   rpc GetDictionaries(Id) returns (Dictionaries);
 
   // Products
-  rpc SearchProducts(ProductSearch) returns (ProductList);
+  rpc SearchProducts(ProductSearchWithPagination) returns (ProductList);
   rpc CreateProduct(ProductId) returns (google.protobuf.Empty);
   rpc UpdateProduct(ProductId) returns (google.protobuf.Empty);
   rpc DeleteProduct(Id) returns (google.protobuf.Empty);

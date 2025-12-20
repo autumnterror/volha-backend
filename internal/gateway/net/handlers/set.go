@@ -1,26 +1,27 @@
 package handlers
 
 import (
-	"github.com/autumnterror/volha-backend/api/proto/gen"
+	"net/http"
+	"strconv"
+
+	productsRPC "github.com/autumnterror/volha-backend/api/proto/gen"
 	"github.com/autumnterror/volha-backend/pkg/views"
 	"github.com/labstack/echo/v4"
 	"github.com/rs/xid"
-	"net/http"
-	"strconv"
 )
 
 const notByCategory = "CLR"
 
-func classifyQuery(q string) *productsRPC.ProductSearch {
+func classifyQuery(q string) *productsRPC.ProductSearchWithPagination {
 	if _, err := xid.FromBytes([]byte(q)); err == nil {
-		return &productsRPC.ProductSearch{Id: q}
+		return &productsRPC.ProductSearchWithPagination{Id: q}
 	}
 
 	if len(q) == 8 && isDigitsOnly(q) {
-		return &productsRPC.ProductSearch{Article: q}
+		return &productsRPC.ProductSearchWithPagination{Article: q}
 	}
 
-	return &productsRPC.ProductSearch{Title: q}
+	return &productsRPC.ProductSearchWithPagination{Title: q}
 }
 
 func isDigitsOnly(s string) bool {

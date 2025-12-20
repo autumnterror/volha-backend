@@ -3,10 +3,11 @@ package domain
 import productsRPC "github.com/autumnterror/volha-backend/api/proto/gen"
 
 type Article struct {
-	Id    string `json:"id"`
-	Title string `json:"title"`
-	Img   string `json:"img"`
-	Text  string `json:"text"`
+	Id           string `json:"id"`
+	Title        string `json:"title"`
+	Img          string `json:"img"`
+	Text         string `json:"text"`
+	CreationTime int64  `json:"creation_time"`
 }
 
 func ArticleFromRpc(b *productsRPC.Article) *Article {
@@ -14,10 +15,11 @@ func ArticleFromRpc(b *productsRPC.Article) *Article {
 		return nil
 	}
 	return &Article{
-		Id:    b.GetId(),
-		Title: b.GetTitle(),
-		Img:   b.GetImg(),
-		Text:  b.GetText(),
+		Id:           b.GetId(),
+		Title:        b.GetTitle(),
+		Img:          b.GetImg(),
+		Text:         b.GetText(),
+		CreationTime: b.GetCreationTime(),
 	}
 }
 
@@ -26,10 +28,11 @@ func ArticleToRpc(b *Article) *productsRPC.Article {
 		return nil
 	}
 	return &productsRPC.Article{
-		Id:    b.Id,
-		Title: b.Title,
-		Img:   b.Img,
-		Text:  b.Text,
+		Id:           b.Id,
+		Title:        b.Title,
+		Img:          b.Img,
+		Text:         b.Text,
+		CreationTime: b.CreationTime,
 	}
 }
 

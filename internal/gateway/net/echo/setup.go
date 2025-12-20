@@ -101,6 +101,11 @@ func New(rds *redis.Client, a *products.Client, cfg *config.Config) *Echo {
 			sl.GET("/all", h.GetAllSlides)
 			sl.GET("", h.GetSlide)
 		}
+		art := userApi.Group("/article")
+		{
+			art.GET("/all", h.GetAllArticles)
+			art.GET("", h.GetArticle)
+		}
 	}
 
 	adminApi := e.Group("/api", mw.CheckId()) //, mw.AdminAuth(cfg)) //TODO ON IF COOKIE
@@ -163,6 +168,12 @@ func New(rds *redis.Client, a *products.Client, cfg *config.Config) *Echo {
 			sl.POST("", h.CreateSlide)
 			sl.PUT("", h.UpdateSlide)
 			sl.DELETE("", h.DeleteSlide)
+		}
+		art := adminApi.Group("/article")
+		{
+			art.POST("", h.CreateArticle)
+			art.PUT("", h.UpdateArticle)
+			art.DELETE("", h.DeleteArticle)
 		}
 	}
 
