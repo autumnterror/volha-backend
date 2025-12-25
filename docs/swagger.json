@@ -2535,6 +2535,9 @@
                         "type": "string"
                     }
                 },
+                "is_favorite": {
+                    "type": "boolean"
+                },
                 "limit": {
                     "type": "integer"
                 },
@@ -2575,6 +2578,9 @@
                     "type": "string"
                 },
                 "sort_order": {
+                    "type": "string"
+                },
+                "title": {
                     "type": "string"
                 }
             }

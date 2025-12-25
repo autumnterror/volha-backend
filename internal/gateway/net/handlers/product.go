@@ -130,7 +130,8 @@ func (a *Apis) SearchProducts(c echo.Context) error {
 
 	items := list.GetItems()
 	if len(items) == 0 {
-		items = []*productsRPC.Product{}
+		log.Green(op)
+		return c.JSON(http.StatusOK, map[string]any{"items": []productsRPC.Product{}, "total": 0})
 	}
 
 	log.Green(op)
@@ -170,7 +171,7 @@ func (a *Apis) FilterProducts(c echo.Context) error {
 	items := list.GetItems()
 	if len(items) == 0 {
 		log.Green(op)
-		return c.JSON(http.StatusOK, []productsRPC.Product{})
+		return c.JSON(http.StatusOK, map[string]any{"items": []productsRPC.Product{}, "total": 0})
 	}
 
 	log.Green(op)
@@ -215,7 +216,7 @@ func (a *Apis) GetAllProducts(c echo.Context) error {
 	items := list.GetItems()
 	if len(items) == 0 {
 		log.Green(op)
-		return c.JSON(http.StatusOK, []productsRPC.Product{})
+		return c.JSON(http.StatusOK, map[string]any{"items": []productsRPC.Product{}, "total": 0})
 	}
 
 	log.Green(op)

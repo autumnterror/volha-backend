@@ -2539,6 +2539,9 @@ const docTemplate = `{
                         "type": "string"
                     }
                 },
+                "is_favorite": {
+                    "type": "boolean"
+                },
                 "limit": {
                     "type": "integer"
                 },
@@ -2579,6 +2582,9 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "sort_order": {
+                    "type": "string"
+                },
+                "title": {
                     "type": "string"
                 }
             }
@@ -2742,8 +2748,8 @@ var SwaggerInfo = &swag.Spec{
 	Description:      "",
 	InfoInstanceName: "swagger",
 	SwaggerTemplate:  docTemplate,
-	// LeftDelim:        "{{",
-	// RightDelim:       "}}",
+	//LeftDelim:        "{{",
+	//RightDelim:       "}}",
 }
 
 func init() {

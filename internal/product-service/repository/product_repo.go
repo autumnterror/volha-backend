@@ -58,7 +58,7 @@ func (d Driver) GetAllProducts(ctx context.Context, start, end int) ([]*domain.P
 			&p.Description,
 			&p.Views,
 			&p.IsFavorite,
-			
+
 			&p.Brand.Id,
 			&p.Brand.Title,
 
@@ -361,6 +361,12 @@ func (d Driver) FilterProducts(ctx context.Context, filter *domain.ProductFilter
 		}
 	}
 
+	if filter.Title != "" {
+		conditions = append(conditions, fmt.Sprintf("p.title ILIKE $%d", argPos))
+		args = append(args, "%"+filter.Title+"%")
+		argPos++
+	}
+
 	if len(filter.Materials) > 0 {
 		placeholders := make([]string, len(filter.Materials))
 		for i, v := range filter.Materials {
@@ -389,6 +395,10 @@ func (d Driver) FilterProducts(ctx context.Context, filter *domain.ProductFilter
         )`, strings.Join(placeholders, ",")))
 	}
 
+	if filter.IsFavorite {
+		conditions = append(conditions, fmt.Sprint("is_favorite = true"))
+	}
+
 	query := filterProductsQuery
 	if len(conditions) > 0 {
 		query += " WHERE " + strings.Join(conditions, " AND ")
@@ -404,7 +414,6 @@ func (d Driver) FilterProducts(ctx context.Context, filter *domain.ProductFilter
 			query += fmt.Sprintf(" ORDER BY %s %s", filter.SortBy, order)
 		}
 	}
-
 	rows, err := d.Driver.QueryContext(ctx, query, args...)
 	if err != nil {
 		return nil, 0, format.Error(op, err)

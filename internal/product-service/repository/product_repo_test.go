@@ -190,7 +190,7 @@ func TestProductFilters(t *testing.T) {
 		Price:       888,
 		Description: "Filtered",
 		Views:       1000,
-		IsFavorite:  false,
+		IsFavorite:  true,
 	}
 	assert.NoError(t, driver.CreateProduct(ctx, product))
 
@@ -209,6 +209,8 @@ func TestProductFilters(t *testing.T) {
 		{"with sort desc", domain.ProductFilter{SortBy: "width", SortOrder: "desc"}},
 		{"with sort asc", domain.ProductFilter{SortBy: "views", SortOrder: "asc"}},
 		{"with limit and offset", domain.ProductFilter{Limit: 1, Offset: 0}},
+		{"is_favorite", domain.ProductFilter{IsFavorite: true}},
+		{"by title", domain.ProductFilter{Title: "terPro"}},
 		{"complex", domain.ProductFilter{
 			Brand:     []string{brand.Id},
 			Category:  []string{category.Id},

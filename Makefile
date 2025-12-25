@@ -45,8 +45,6 @@ pull-a:
 #-------------------------test-------------------------
 t-m:
 	go test -run $(METHOD) ./... -v
-t-m-h:
-	go test -run TestGetDictionaries  ./... -v
 t-int:
 	go test ./internal/product-service/repository -v
 t-red:

@@ -133,6 +133,8 @@ message ProductFilter {
   string sort_order = 15;
   int32 offset = 16;
   int32 limit = 17;
+  bool is_favorite = 18;
+  string title = 19;
 }
 
 message Dictionaries {

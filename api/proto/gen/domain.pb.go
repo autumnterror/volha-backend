@@ -1152,6 +1152,8 @@ type ProductFilter struct {
 	SortOrder     string                 `protobuf:"bytes,15,opt,name=sort_order,json=sortOrder,proto3" json:"sort_order,omitempty"`
 	Offset        int32                  `protobuf:"varint,16,opt,name=offset,proto3" json:"offset,omitempty"`
 	Limit         int32                  `protobuf:"varint,17,opt,name=limit,proto3" json:"limit,omitempty"`
+	IsFavorite    bool                   `protobuf:"varint,18,opt,name=is_favorite,json=isFavorite,proto3" json:"is_favorite,omitempty"`
+	Title         string                 `protobuf:"bytes,19,opt,name=title,proto3" json:"title,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -1303,6 +1305,20 @@ func (x *ProductFilter) GetLimit() int32 {
 		return x.Limit
 	}
 	return 0
+}
+
+func (x *ProductFilter) GetIsFavorite() bool {
+	if x != nil {
+		return x.IsFavorite
+	}
+	return false
+}
+
+func (x *ProductFilter) GetTitle() string {
+	if x != nil {
+		return x.Title
+	}
+	return ""
 }
 
 type Dictionaries struct {
@@ -1968,7 +1984,7 @@ const file_domain_proto_rawDesc = "" +
 	"\vdescription\x18\x0f \x01(\tR\vdescription\x12\x14\n" +
 	"\x05views\x18\x10 \x01(\x05R\x05views\x12\x1f\n" +
 	"\vis_favorite\x18\x11 \x01(\bR\n" +
-	"isFavorite\"\xe3\x03\n" +
+	"isFavorite\"\x9a\x04\n" +
 	"\rProductFilter\x12\x14\n" +
 	"\x05brand\x18\x01 \x03(\tR\x05brand\x12\x18\n" +
 	"\acountry\x18\x02 \x03(\tR\acountry\x12\x1a\n" +
@@ -1990,7 +2006,10 @@ const file_domain_proto_rawDesc = "" +
 	"\n" +
 	"sort_order\x18\x0f \x01(\tR\tsortOrder\x12\x16\n" +
 	"\x06offset\x18\x10 \x01(\x05R\x06offset\x12\x14\n" +
-	"\x05limit\x18\x11 \x01(\x05R\x05limit\"\xe3\x03\n" +
+	"\x05limit\x18\x11 \x01(\x05R\x05limit\x12\x1f\n" +
+	"\vis_favorite\x18\x12 \x01(\bR\n" +
+	"isFavorite\x12\x14\n" +
+	"\x05title\x18\x13 \x01(\tR\x05title\"\xe3\x03\n" +
 	"\fDictionaries\x12'\n" +
 	"\x06brands\x18\x01 \x03(\v2\x0f.products.BrandR\x06brands\x122\n" +
 	"\n" +

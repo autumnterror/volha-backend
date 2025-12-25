@@ -77,23 +77,25 @@ func NewEmptyProduct() Product {
 }
 
 type ProductFilter struct {
-	Brand     []string `json:"brand"`
-	Country   []string `json:"country"`
-	Category  []string `json:"category"`
-	MinWidth  int32    `json:"min_width"`
-	MaxWidth  int32    `json:"max_width"`
-	MinHeight int32    `json:"min_height"`
-	MaxHeight int32    `json:"max_height"`
-	MinDepth  int32    `json:"min_depth"`
-	MaxDepth  int32    `json:"max_depth"`
-	Materials []string `json:"materials"`
-	Colors    []string `json:"colors"`
-	MinPrice  int32    `json:"min_price"`
-	MaxPrice  int32    `json:"max_price"`
-	SortBy    string   `json:"sort_by"`
-	SortOrder string   `json:"sort_order"`
-	Offset    int32    `json:"offset"`
-	Limit     int32    `json:"limit"`
+	Brand      []string `json:"brand"`
+	Country    []string `json:"country"`
+	Category   []string `json:"category"`
+	MinWidth   int32    `json:"min_width"`
+	MaxWidth   int32    `json:"max_width"`
+	MinHeight  int32    `json:"min_height"`
+	MaxHeight  int32    `json:"max_height"`
+	MinDepth   int32    `json:"min_depth"`
+	MaxDepth   int32    `json:"max_depth"`
+	Materials  []string `json:"materials"`
+	Colors     []string `json:"colors"`
+	MinPrice   int32    `json:"min_price"`
+	MaxPrice   int32    `json:"max_price"`
+	SortBy     string   `json:"sort_by"`
+	SortOrder  string   `json:"sort_order"`
+	Offset     int32    `json:"offset"`
+	Limit      int32    `json:"limit"`
+	IsFavorite bool     `json:"is_favorite"`
+	Title      string   `json:"title"`
 }
 
 type ProductSearch struct {
@@ -273,23 +275,25 @@ func ProductFilterFromRpc(f *productsRPC.ProductFilter) *ProductFilter {
 		return nil
 	}
 	return &ProductFilter{
-		Brand:     append([]string{}, f.GetBrand()...),
-		Country:   append([]string{}, f.GetCountry()...),
-		Category:  append([]string{}, f.GetCategory()...),
-		MinWidth:  f.GetMinWidth(),
-		MaxWidth:  f.GetMaxWidth(),
-		MinHeight: f.GetMinHeight(),
-		MaxHeight: f.GetMaxHeight(),
-		MinDepth:  f.GetMinDepth(),
-		MaxDepth:  f.GetMaxDepth(),
-		Materials: append([]string{}, f.GetMaterials()...),
-		Colors:    append([]string{}, f.GetColors()...),
-		MinPrice:  f.GetMinPrice(),
-		MaxPrice:  f.GetMaxPrice(),
-		SortBy:    f.GetSortBy(),
-		SortOrder: f.GetSortOrder(),
-		Offset:    f.GetOffset(),
-		Limit:     f.GetLimit(),
+		Brand:      append([]string{}, f.GetBrand()...),
+		Country:    append([]string{}, f.GetCountry()...),
+		Category:   append([]string{}, f.GetCategory()...),
+		MinWidth:   f.GetMinWidth(),
+		MaxWidth:   f.GetMaxWidth(),
+		MinHeight:  f.GetMinHeight(),
+		MaxHeight:  f.GetMaxHeight(),
+		MinDepth:   f.GetMinDepth(),
+		MaxDepth:   f.GetMaxDepth(),
+		Materials:  append([]string{}, f.GetMaterials()...),
+		Colors:     append([]string{}, f.GetColors()...),
+		MinPrice:   f.GetMinPrice(),
+		MaxPrice:   f.GetMaxPrice(),
+		SortBy:     f.GetSortBy(),
+		SortOrder:  f.GetSortOrder(),
+		Offset:     f.GetOffset(),
+		Limit:      f.GetLimit(),
+		IsFavorite: f.GetIsFavorite(),
+		Title:      f.GetTitle(),
 	}
 }
 
@@ -298,23 +302,25 @@ func ProductFilterToRpc(f *ProductFilter) *productsRPC.ProductFilter {
 		return nil
 	}
 	return &productsRPC.ProductFilter{
-		Brand:     append([]string{}, f.Brand...),
-		Country:   append([]string{}, f.Country...),
-		Category:  append([]string{}, f.Category...),
-		MinWidth:  f.MinWidth,
-		MaxWidth:  f.MaxWidth,
-		MinHeight: f.MinHeight,
-		MaxHeight: f.MaxHeight,
-		MinDepth:  f.MinDepth,
-		MaxDepth:  f.MaxDepth,
-		Materials: append([]string{}, f.Materials...),
-		Colors:    append([]string{}, f.Colors...),
-		MinPrice:  f.MinPrice,
-		MaxPrice:  f.MaxPrice,
-		SortBy:    f.SortBy,
-		SortOrder: f.SortOrder,
-		Offset:    f.Offset,
-		Limit:     f.Limit,
+		Brand:      append([]string{}, f.Brand...),
+		Country:    append([]string{}, f.Country...),
+		Category:   append([]string{}, f.Category...),
+		MinWidth:   f.MinWidth,
+		MaxWidth:   f.MaxWidth,
+		MinHeight:  f.MinHeight,
+		MaxHeight:  f.MaxHeight,
+		MinDepth:   f.MinDepth,
+		MaxDepth:   f.MaxDepth,
+		Materials:  append([]string{}, f.Materials...),
+		Colors:     append([]string{}, f.Colors...),
+		MinPrice:   f.MinPrice,
+		MaxPrice:   f.MaxPrice,
+		SortBy:     f.SortBy,
+		SortOrder:  f.SortOrder,
+		Offset:     f.Offset,
+		Limit:      f.Limit,
+		IsFavorite: f.IsFavorite,
+		Title:      f.Title,
 	}
 }
 

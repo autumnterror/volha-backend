@@ -176,6 +176,8 @@ definitions:
         items:
           type: string
         type: array
+      is_favorite:
+        type: boolean
       limit:
         type: integer
       materials:
@@ -203,6 +205,8 @@ definitions:
       sort_by:
         type: string
       sort_order:
+        type: string
+      title:
         type: string
     type: object
   productsRPC.ProductId:
