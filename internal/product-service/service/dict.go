@@ -12,6 +12,10 @@ func (s *ProductsService) GetDictionaries(ctx context.Context, idCat string) (*d
 	if err != nil {
 		return nil, wrapServiceCheck(op, err)
 	}
+	if idCat == domain.NotByCategory || idCat == "" {
+		return repo.GetDictionaries(ctx)
+	} else {
+		return repo.GetDictionariesByCategoryID(ctx, idCat)
+	}
 
-	return repo.GetDictionaries(ctx, idCat)
 }

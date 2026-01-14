@@ -34,6 +34,7 @@ func TestGetDictionaries(t *testing.T) {
 	cat := &domain.Category{Id: "cat_test-dic", Title: "Test Cat", Uri: "test-uri"}
 	cat2 := &domain.Category{Id: "cat_test2-dic", Title: "Test Cat", Uri: "test-uri"}
 	cou := &domain.Country{Id: "country_test-dic", Title: "Test Country", Friendly: "FriendlyName"}
+	cou2 := &domain.Country{Id: "country_test-dic2", Title: "Test Country2", Friendly: "FriendlyName"}
 	m := &domain.Material{Id: "mat_test-dic", Title: "Test Material"}
 	col := &domain.Color{Id: "color_test-dic", Title: "TestColor", Hex: "#123456"}
 	pmax := &domain.ProductId{
@@ -59,7 +60,7 @@ func TestGetDictionaries(t *testing.T) {
 		Article:     "test2",
 		Brand:       brand.Id,
 		Category:    cat2.Id,
-		Country:     cou.Id,
+		Country:     cou2.Id,
 		Width:       5,
 		Height:      5,
 		Depth:       5,
@@ -85,14 +86,18 @@ func TestGetDictionaries(t *testing.T) {
 	assert.NoError(t, driver.CreateProduct(ctx, pmax))
 	assert.NoError(t, driver.CreateProduct(ctx, pmin))
 
-	d, err := driver.GetDictionaries(ctx, domain.NotByCategory)
+	d, err := driver.GetDictionaries(ctx)
 
 	assert.NoError(t, err)
 	log.Green("get all dic ", d)
 	assert.Equal(t, 5, int(d.MinHeight))
+	assert.Contains(t, d.Countries, cou)
+	assert.Contains(t, d.Countries, cou2)
 
-	d, err = driver.GetDictionaries(ctx, cat.Id)
+	d, err = driver.GetDictionariesByCategoryID(ctx, cat.Id)
 	assert.NoError(t, err)
 	log.Green("get dic by category ", d)
 	assert.Equal(t, 12, int(d.MinHeight))
+	assert.Contains(t, d.Countries, cou)
+	assert.NotContains(t, d.Countries, cou2)
 }

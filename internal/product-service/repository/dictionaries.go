@@ -2,6 +2,7 @@ package repository
 
 import (
 	"context"
+	"database/sql"
 
 	"log"
 	"strconv"
@@ -12,27 +13,39 @@ import (
 )
 
 type DictRepo interface {
-	GetDictionaries(ctx context.Context, idCat string) (*domain.Dictionaries, error)
+	GetDictionaries(ctx context.Context) (*domain.Dictionaries, error)
+	GetDictionariesByCategoryID(ctx context.Context, idCat string) (*domain.Dictionaries, error)
 }
 
-// GetDictionaries if field = domain.NotByCategory then get all dict
-func (d Driver) GetDictionaries(ctx context.Context, idCat string) (*domain.Dictionaries, error) {
+// GetDictionaries извлекает все справочники для общего фильтра.
+func (d Driver) GetDictionaries(ctx context.Context) (*domain.Dictionaries, error) {
 	const op = "PostgresDb.GetDictionaries"
 
-	var query string
-	var args []any
-	if idCat == domain.NotByCategory || idCat == "" {
-		query = getDicQuery
-	} else {
-		query = getDicByCatQuery
-		args = append(args, idCat)
-	}
-
-	rows, err := d.Driver.QueryContext(ctx, query, args...)
+	rows, err := d.Driver.QueryContext(ctx, getDicQuery)
 	if err != nil {
 		return nil, format.Error(op, err)
 	}
 	defer rows.Close()
+
+	return parseDictionaryRows(rows)
+}
+
+// GetDictionariesByCategoryID извлекает справочники, относящиеся к определенной категории товаров.
+func (d Driver) GetDictionariesByCategoryID(ctx context.Context, idCat string) (*domain.Dictionaries, error) {
+	const op = "PostgresDb.GetDictionariesByCategoryID"
+
+	rows, err := d.Driver.QueryContext(ctx, getDicByCatQuery, idCat)
+	if err != nil {
+		return nil, format.Error(op, err)
+	}
+	defer rows.Close()
+
+	return parseDictionaryRows(rows)
+}
+
+// parseDictionaryRows обрабатывает строки из SQL-запроса и преобразует их в структуру domain.Dictionaries.
+func parseDictionaryRows(rows *sql.Rows) (*domain.Dictionaries, error) {
+	const op = "parseDictionaryRows"
 
 	result := &domain.Dictionaries{
 		Brands:     []*domain.Brand{},
@@ -49,6 +62,7 @@ func (d Driver) GetDictionaries(ctx context.Context, idCat string) (*domain.Dict
 		MinDepth:   0,
 		MaxDepth:   0,
 	}
+
 	for rows.Next() {
 		var typ, id, field1, field2, field3 string
 		if err := rows.Scan(&typ, &id, &field1, &field2, &field3); err != nil {
@@ -90,6 +104,10 @@ func (d Driver) GetDictionaries(ctx context.Context, idCat string) (*domain.Dict
 				result.MaxDepth = int32(r)
 			}
 		}
+	}
+
+	if err := rows.Err(); err != nil {
+		return nil, format.Error(op, err)
 	}
 
 	return result, nil

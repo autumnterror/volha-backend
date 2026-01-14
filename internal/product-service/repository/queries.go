@@ -336,34 +336,58 @@ JOIN categories cat ON cat.id = p.category_id
 JOIN countries  co  ON co.id  = p.country_id
 `
 const getDicByCatQuery = `
-		WITH dicts AS (
-			SELECT 'brand' as type, id, title, '' as extra1, '' as extra2 FROM brands
-			UNION ALL
-			SELECT 'category', id, title, uri, '' FROM categories
-			UNION ALL
-			SELECT 'country', id, title, friendly, '' FROM countries
-			UNION ALL
-			SELECT 'material', id, title, '', '' FROM materials
-			UNION ALL
-			SELECT 'color', id, title, hex, '' FROM colors
-		),
-		stats AS (
-			SELECT
-				MIN(price)::text AS min_price,
-				MAX(price)::text AS max_price,
-				MIN(width)::text AS min_width,
-				MAX(width)::text AS max_width,
-				MIN(height)::text AS min_height,
-				MAX(height)::text AS max_height,
-				MIN(depth)::text AS min_depth,
-				MAX(depth)::text AS max_depth
-			FROM products
-			WHERE category_id = $1
-		)
-		SELECT * FROM dicts
-		UNION ALL
-		SELECT 'stats', '', min_price, max_price, min_width || ',' || max_width || ',' || min_height || ',' || max_height || ',' || min_depth || ',' || max_depth FROM stats;
-	`
+-- Выбираем бренды, которые есть у товаров в данной категории
+SELECT DISTINCT 'brand' as type, b.id, b.title, '' as extra1, '' as extra2
+FROM brands b
+JOIN products p ON b.id = p.brand_id
+WHERE p.category_id = $1
+
+UNION ALL
+
+-- Возвращаем все категории, чтобы пользователь мог переключаться между ними
+SELECT 'category', id, title, uri, '' FROM categories
+
+UNION ALL
+
+-- Выбираем страны, которые есть у товаров в данной категории
+SELECT DISTINCT 'country' as type, c.id, c.title, c.friendly, ''
+FROM countries c
+JOIN products p ON c.id = p.country_id
+WHERE p.category_id = $1
+
+UNION ALL
+
+-- Выбираем материалы, которые есть у товаров в данной категории, через связующую таблицу
+SELECT DISTINCT 'material' as type, m.id, m.title, '', ''
+FROM materials m
+JOIN product_materials pm ON m.id = pm.material_id
+JOIN products p ON pm.product_id = p.id
+WHERE p.category_id = $1
+
+UNION ALL
+
+-- Выбираем цвета, которые есть у товаров в данной категории, через связующую таблицу
+SELECT DISTINCT 'color' as type, c.id, c.title, c.hex, ''
+FROM colors c
+JOIN product_colors pc ON c.id = pc.color_id
+JOIN products p ON pc.product_id = p.id
+WHERE p.category_id = $1
+
+UNION ALL
+
+-- Считаем статистику (мин/макс цены и размеры) только для товаров из этой категории
+SELECT
+    'stats',
+    '',
+    COALESCE(MIN(price)::text, '0'),
+    COALESCE(MAX(price)::text, '0'),
+    COALESCE(MIN(width)::text, '0') || ',' || COALESCE(MAX(width)::text, '0') || ',' ||
+    COALESCE(MIN(height)::text, '0') || ',' || COALESCE(MAX(height)::text, '0') || ',' ||
+    COALESCE(MIN(depth)::text, '0') || ',' || COALESCE(MAX(depth)::text, '0')
+FROM products
+WHERE category_id = $1;
+`
+
 const getDicQuery = `
 		WITH dicts AS (
 			SELECT 'brand' as type, id, title, '' as extra1, '' as extra2 FROM brands
