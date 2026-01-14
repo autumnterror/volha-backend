@@ -1384,7 +1384,7 @@ const docTemplate = `{
                     "200": {
                         "description": "Успешный запрос",
                         "schema": {
-                            "$ref": "#/definitions/productsRPC.Dictionaries"
+                            "$ref": "#/definitions/views.Dictionaries_by_cat"
                         }
                     },
                     "400": {
@@ -2683,6 +2683,68 @@ const docTemplate = `{
                 }
             }
         },
+        "views.Dictionaries_by_cat": {
+            "type": "object",
+            "properties": {
+                "brands": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/productsRPC.Brand"
+                    }
+                },
+                "categories": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/productsRPC.Category"
+                    }
+                },
+                "colors": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/productsRPC.Color"
+                    }
+                },
+                "countries": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/productsRPC.Country"
+                    }
+                },
+                "filtered_category": {
+                    "type": "string"
+                },
+                "materials": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/productsRPC.Material"
+                    }
+                },
+                "max_depth": {
+                    "type": "integer"
+                },
+                "max_height": {
+                    "type": "integer"
+                },
+                "max_price": {
+                    "type": "integer"
+                },
+                "max_width": {
+                    "type": "integer"
+                },
+                "min_depth": {
+                    "type": "integer"
+                },
+                "min_height": {
+                    "type": "integer"
+                },
+                "min_price": {
+                    "type": "integer"
+                },
+                "min_width": {
+                    "type": "integer"
+                }
+            }
+        },
         "views.Email": {
             "type": "object",
             "properties": {
@@ -2757,8 +2819,8 @@ var SwaggerInfo = &swag.Spec{
 	Description:      "",
 	InfoInstanceName: "swagger",
 	SwaggerTemplate:  docTemplate,
-	// LeftDelim:        "{{",
-	// RightDelim:       "}}",
+	LeftDelim:        "{{",
+	RightDelim:       "}}",
 }
 
 func init() {

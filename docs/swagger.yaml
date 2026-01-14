@@ -265,6 +265,47 @@ definitions:
       link:
         type: string
     type: object
+  views.Dictionaries_by_cat:
+    properties:
+      brands:
+        items:
+          $ref: '#/definitions/productsRPC.Brand'
+        type: array
+      categories:
+        items:
+          $ref: '#/definitions/productsRPC.Category'
+        type: array
+      colors:
+        items:
+          $ref: '#/definitions/productsRPC.Color'
+        type: array
+      countries:
+        items:
+          $ref: '#/definitions/productsRPC.Country'
+        type: array
+      filtered_category:
+        type: string
+      materials:
+        items:
+          $ref: '#/definitions/productsRPC.Material'
+        type: array
+      max_depth:
+        type: integer
+      max_height:
+        type: integer
+      max_price:
+        type: integer
+      max_width:
+        type: integer
+      min_depth:
+        type: integer
+      min_height:
+        type: integer
+      min_price:
+        type: integer
+      min_width:
+        type: integer
+    type: object
   views.Email:
     properties:
       html:
@@ -1219,7 +1260,7 @@ paths:
         "200":
           description: Успешный запрос
           schema:
-            $ref: '#/definitions/productsRPC.Dictionaries'
+            $ref: '#/definitions/views.Dictionaries_by_cat'
         "400":
           description: Ошибка на сервере
           schema:
