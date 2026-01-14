@@ -79,6 +79,8 @@ func TestGetDictionaries(t *testing.T) {
 	assert.NoError(t, err)
 	err = driver.Create(ctx, cou, views.Country)
 	assert.NoError(t, err)
+	err = driver.Create(ctx, cou2, views.Country)
+	assert.NoError(t, err)
 	err = driver.Create(ctx, m, views.Material)
 	assert.NoError(t, err)
 	err = driver.Create(ctx, col, views.Color)
