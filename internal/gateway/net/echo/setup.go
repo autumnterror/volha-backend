@@ -108,7 +108,7 @@ func New(rds *redis.Client, a *products.Client, cfg *config.Config) *Echo {
 		}
 	}
 
-	adminApi := e.Group("/api", mw.CheckId()) //, mw.AdminAuth(cfg)) //TODO ON IF COOKIE
+	adminApi := e.Group("/api", mw.CheckId(), mw.AdminAuth(cfg))
 	{
 		f := adminApi.Group("/files")
 		{

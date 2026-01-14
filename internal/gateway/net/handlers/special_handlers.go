@@ -53,7 +53,7 @@ func (a *Apis) GetPhotosByProductAndColor(c echo.Context) error {
 // @Tags dictionaries
 // @Produce json
 // @Param id query string true "ID категории"
-// @Success 200 {object} productsRPC.Dictionaries "Успешный запрос"
+// @Success 200 {object} views.Dictionaries_by_cat "Успешный запрос"
 // @Failure 400 {object} views.SWGError "Ошибка на сервере"
 // @Failure 502 {object} views.SWGError "Ошибка взаимодействия с сервисом"
 // @Router /api/dictionaries/all/by-category [get]
@@ -75,6 +75,11 @@ func (a *Apis) GetAllDictionariesByCategory(c echo.Context) error {
 
 	ctx, cancel := context.WithTimeout(c.Request().Context(), 3*time.Second)
 	defer cancel()
+
+	cat, err := a.apiProduct.API.GetCategory(ctx, &productsRPC.Id{Id: id})
+	if err != nil {
+		return c.JSON(http.StatusNotFound, views.SWGError{Error: "category does not exist"})
+	}
 
 	data, err := a.apiProduct.API.GetDictionaries(ctx, &productsRPC.Id{Id: id})
 	if err != nil {
@@ -99,7 +104,23 @@ func (a *Apis) GetAllDictionariesByCategory(c echo.Context) error {
 		log.Error(op, "", err)
 	}
 	log.Green(op)
-	return c.JSON(http.StatusOK, data)
+
+	return c.JSON(http.StatusOK, views.Dictionaries_by_cat{
+		Brands:           data.GetBrands(),
+		Categories:       data.GetCategories(),
+		Countries:        data.GetCountries(),
+		Materials:        data.GetMaterials(),
+		Colors:           data.GetColors(),
+		MinPrice:         data.GetMinPrice(),
+		MaxPrice:         data.GetMaxPrice(),
+		MinWidth:         data.GetMinWidth(),
+		MaxWidth:         data.GetMaxWidth(),
+		MinHeight:        data.GetMinHeight(),
+		MaxHeight:        data.GetMaxHeight(),
+		MinDepth:         data.GetMinDepth(),
+		MaxDepth:         data.GetMaxDepth(),
+		FilteredCategory: cat.GetTitle(),
+	})
 }
 
 // GetAllDictionaries godoc
@@ -158,22 +179,36 @@ func (a *Apis) GetAllDictionaries(c echo.Context) error {
 // @Description проверяет пароль из cookie
 // @Tags auth
 // @Produce json
+// @Param admin_pw query string true "Пароль)"
 // @Success 200 {object} views.SWGMessage "Успешный запрос"
 // @Failure 401 {object} views.SWGError "Пароль не верный"
 // @Router /api/auth/check [get]
 func (a *Apis) CheckPw(c echo.Context) error {
 	const op = "handlers.CheckPw"
 	log.Blue(op)
-	log.Println(op)
 
-	cookie, err := c.Cookie("admin_pw")
+	adminpw := c.QueryParam("admin_pw")
 
-	if err != nil || cookie.Value != a.cfg.AdminPW {
+	if adminpw == "" {
 		return c.JSON(http.StatusUnauthorized, views.SWGError{
-			Error: "unauthorized",
+			Error: "not query param",
+		})
+	}
+	if adminpw != a.cfg.AdminPW {
+		return c.JSON(http.StatusUnauthorized, views.SWGError{
+			Error: "pw bad",
 		})
 	}
 	log.Green(op)
+
+	c.SetCookie(&http.Cookie{
+		Name:     "admin_pw",
+		Value:    adminpw,
+		Path:     "/",
+		HttpOnly: true,
+		SameSite: http.SameSiteLaxMode,
+	})
+
 	return c.JSON(http.StatusOK, views.SWGMessage{
 		Message: "pw cool",
 	})

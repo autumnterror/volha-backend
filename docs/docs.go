@@ -238,6 +238,15 @@ const docTemplate = `{
                     "auth"
                 ],
                 "summary": "Проверить пароль",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Пароль)",
+                        "name": "admin_pw",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "Успешный запрос",
@@ -2748,8 +2757,8 @@ var SwaggerInfo = &swag.Spec{
 	Description:      "",
 	InfoInstanceName: "swagger",
 	SwaggerTemplate:  docTemplate,
-	//LeftDelim:        "{{",
-	//RightDelim:       "}}",
+	// LeftDelim:        "{{",
+	// RightDelim:       "}}",
 }
 
 func init() {

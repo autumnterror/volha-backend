@@ -234,6 +234,15 @@
                     "auth"
                 ],
                 "summary": "Проверить пароль",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Пароль)",
+                        "name": "admin_pw",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "Успешный запрос",

@@ -1,8 +1,9 @@
 package mw
 
 import (
-	"github.com/autumnterror/volha-backend/internal/gateway/config"
 	"net/http"
+
+	"github.com/autumnterror/volha-backend/internal/gateway/config"
 
 	"github.com/labstack/echo/v4"
 	"github.com/rs/xid"

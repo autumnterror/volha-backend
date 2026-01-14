@@ -11,3 +11,4 @@ test.go
 qodana.yaml
 migrator
 build/volha/images/*.jpg
+/build/volha/images

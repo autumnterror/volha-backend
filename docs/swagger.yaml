@@ -458,6 +458,12 @@ paths:
   /api/auth/check:
     get:
       description: проверяет пароль из cookie
+      parameters:
+      - description: Пароль)
+        in: query
+        name: admin_pw
+        required: true
+        type: string
       produces:
       - application/json
       responses:
